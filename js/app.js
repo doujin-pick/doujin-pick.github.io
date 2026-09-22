@@ -220,7 +220,7 @@
     if (no) {
       no.addEventListener("click", () => {
         modal.innerHTML =
-          '<div class="age-panel"><h2>ご利用いただけません</h2><p>18歳未満の方は閲覧できません。</p><p><a href="https://www.dlsite.com/">DLsiteトップへ</a></p></div>';
+          '<div class="age-panel"><h2>ご利用いただけません</h2><p>18歳未満の方は閲覧できません。</p></div>';
       });
     }
   }
@@ -293,6 +293,7 @@
     const pageHref = workPageHref(work.id);
     const favOn = isFav(work.id);
     const tags = (work.tags || [])
+      .slice(0, 6)
       .map((t) => `<button type="button" class="tag tag-btn" data-tag="${escapeHtml(t)}">${escapeHtml(t)}</button>`)
       .join("");
     body.innerHTML = `
@@ -619,7 +620,7 @@
       await window.DOJIN_DATA.load();
     } catch (e) {
       if (loading) {
-        loading.innerHTML = `<div class="error-box"><strong>データを読めませんでした</strong>data/works.json を確認するか、scripts/update_works.py を実行してください。</div>`;
+        loading.innerHTML = `<div class="error-box"><strong>データを読めませんでした</strong>時間をおいて再度お試しください。</div>`;
       }
       return;
     }
@@ -627,7 +628,7 @@
     allWorks = window.DOJIN_DATA.works || [];
     if (!allWorks.length) {
       document.querySelectorAll(".grid").forEach((el) => {
-        el.innerHTML = `<div class="empty"><strong>作品データが空です</strong>scripts/update_works.py を実行してください。</div>`;
+        el.innerHTML = `<div class="empty"><strong>作品データが空です</strong>しばらくしてから再度お試しください。</div>`;
       });
     }
 

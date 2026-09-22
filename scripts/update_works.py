@@ -28,6 +28,7 @@ RANKING_PARSE_LIMIT = 100  # IDs per ranking/list page
 SLEEP_MIN, SLEEP_MAX = 0.3, 0.6
 CACHE_RESUME = True  # skip re-fetch if cache has parseable description
 PARTIAL_SAVE_EVERY = 25
+MAX_TAGS = 6
 
 # Popularity-first: week/month/year/total + category hits, then day/sale/new.
 # Verified public maniax/home ranking URLs (2026-09). Order = ingest priority.
@@ -179,7 +180,7 @@ def parse_ranking(html: str, source_label: str, section_hints: list[str]) -> lis
             t = H.unescape(tm.strip())
             if t and t not in tags and len(t) < 30:
                 tags.append(t)
-        tags = tags[:6]
+        tags = tags[:MAX_TAGS]
 
         wtype = "同人"
         ctx = html[max(0, pos - 2000) : pos + 200]
@@ -336,7 +337,7 @@ def extract_tags(html: str) -> list[str]:
         t = H.unescape(sm.strip())
         if t and t not in tags and 1 < len(t) < 30:
             tags.append(t)
-    return tags[:24]
+    return tags[:6]
 
 
 def extract_work_fields(html: str, rid: str) -> dict:
@@ -416,7 +417,7 @@ def extract_work_fields(html: str, rid: str) -> dict:
         out["image_sample"] = abs_img(sm.group(1))
 
     out["description"] = extract_description(html)
-    out["tags"] = extract_tags(html)
+    out["tags"] = extract_tags(html)[:MAX_TAGS]
 
     # Category refinement
     wtype = out.get("work_type") or ""
@@ -551,6 +552,14 @@ def placeholders(n: int) -> list[dict]:
     return out
 
 
+
+def clamp_work_tags(works: list[dict]) -> None:
+    for w in works:
+        tags = w.get("tags") or []
+        if isinstance(tags, list) and len(tags) > MAX_TAGS:
+            w["tags"] = tags[:MAX_TAGS]
+
+
 def write_embed(payload: dict) -> None:
     EMBED.write_text(
         "window.__DOJIN_EMBEDDED_WORKS__ = "
@@ -673,6 +682,7 @@ def main() -> int:
         }
 
     def save_progress(works: list[dict], enriched_n: int, note: str = "") -> None:
+        clamp_work_tags(works)
         enrich_sections(works)
         merged = merge_preserve_affiliates(works, old_works)
         payload = build_payload(merged, enriched_n)
@@ -726,6 +736,7 @@ def main() -> int:
         save_progress(collected, enriched_n, "interrupted")
         return 1
 
+    clamp_work_tags(collected)
     enrich_sections(collected)
     collected = merge_preserve_affiliates(collected, old_works)
     payload = build_payload(collected, enriched_n)

@@ -48,7 +48,6 @@ MAIN_PAGES = [
     ("ranking.html", "ranking"),
     ("sale.html", "sale"),
     ("genre.html", "genre"),
-    ("about.html", "about"),
 ]
 
 PAGE_META = {
@@ -66,15 +65,11 @@ PAGE_META = {
     },
     "sale.html": {
         "title": "セール｜同人ピック",
-        "description": "割引中の同人作品を割引率や価格帯で拾うページ（18歳以上）。",
+        "description": "割引中の同人作品を、割引率や価格帯から探せます（18歳以上）。",
     },
     "genre.html": {
         "title": "形式から探す｜同人ピック",
         "description": "マンガ/CG・ゲーム・ボイス・ASMRなど形式から同人を探す（18歳以上）。",
-    },
-    "about.html": {
-        "title": "同人ピック",
-        "description": "同人ピックの案内。非公式キュレーション、18歳以上向け、購入はDLsite側です。",
     },
 }
 
@@ -301,10 +296,10 @@ def age_gate_html() -> str:
     return """  <div id="age-gate">
     <div class="age-panel">
       <h2>年齢確認</h2>
-      <p>ここは<strong>18歳以上</strong>向けの同人キュレーションです。アダルト作品を含みます。</p>
+      <p>18歳以上ですか？</p>
       <div class="age-actions">
-        <button type="button" class="btn btn-primary" id="age-yes">18歳以上です</button>
-        <button type="button" class="btn" id="age-no">18歳未満です</button>
+        <button type="button" class="btn btn-primary" id="age-yes">はい</button>
+        <button type="button" class="btn" id="age-no">いいえ</button>
       </div>
     </div>
   </div>"""
@@ -319,7 +314,7 @@ def header_nav(depth: int = 0, active: str = "") -> str:
     <div class="container header-inner">
       <a class="brand" href="{p}index.html">
         <span class="brand-name">{esc(SITE_NAME)}</span>
-        <span class="brand-tag">人手で拾う同人ガイド</span>
+        <span class="brand-tag">同人作品ガイド</span>
       </a>
       <div class="search-wrap">
         <label class="sr-only" for="global-search">作品を検索</label>
@@ -346,20 +341,16 @@ def header_nav(depth: int = 0, active: str = "") -> str:
 
 
 def footer_html(depth: int, tag_links_html: str, updated_at: str = "") -> str:
-    p = "../" * depth
-    updated = f'<p id="data-updated">データ更新: {esc(updated_at)}</p>' if updated_at else '<p id="data-updated"></p>'
     return f"""  <footer class="site-footer">
     <div class="container">
       {FOOTER_START}
       {tag_links_html}
       {FOOTER_END}
       <div class="disclaimer">
-        {updated}
-        <p>外部サイトへのリンクを含みます。</p>
-        <p><strong>18歳未満の方の閲覧・購入はできません。</strong></p>
-        <p>DLsite および関連ロゴは各社の商標です。本サイトは非公式のキュレーションであり、エイシスとは無関係です。</p>
+        <p id="data-updated"></p>
+        <p><strong>18歳未満の方はご利用いただけません。</strong></p>
+        <p>リンク先はDLsiteです。</p>
         <p>© {esc(SITE_NAME)}</p>
-        <p class="footer-nav-static"><a href="{p}index.html">ホーム</a> · <a href="{p}explore.html">探す</a></p>
       </div>
     </div>
   </footer>"""
@@ -466,7 +457,7 @@ def generate_work_page(
         "url": canonical,
         "image": image or None,
         "creator": {"@type": "Organization", "name": maker} if maker else None,
-        "genre": (work.get("tags") or [])[:12] or None,
+        "genre": (work.get("tags") or [])[:6] or None,
         "identifier": wid,
     }
     creative_ld = {k: v for k, v in creative_ld.items() if v is not None}
@@ -481,7 +472,7 @@ def generate_work_page(
         ],
     }
 
-    tags = work.get("tags") or []
+    tags = (work.get("tags") or [])[:6]
     tag_bits = []
     for t in tags:
         href = explore_tag_href(t, prefix="../")
@@ -722,6 +713,8 @@ def write_robots(site_url: str) -> None:
     text = f"""# 同人ピック robots.txt
 User-agent: *
 Allow: /
+Disallow: /scripts/
+Disallow: /data/
 
 # Absolute sitemap (set SITE_URL or js/config.js siteUrl before deploy)
 Sitemap: {sitemap}
@@ -744,7 +737,6 @@ def write_sitemap(
         ("ranking.html", "0.8"),
         ("sale.html", "0.8"),
         ("genre.html", "0.7"),
-        ("about.html", "0.5"),
     ]
     for path, pri in static:
         urls.append((abs_url(site_url, path), lm, pri))
@@ -890,9 +882,8 @@ def patch_main_pages(site_url: str, top_tags: list[tuple[str, int]], updated_at:
             f"      {FOOTER_END}\n"
             '      <div class="disclaimer">\n'
             '      <p id="data-updated"></p>\n'
-            '      <p>外部サイトへのリンクを含みます。</p>\n'
-            '      <p><strong>18歳未満の方の閲覧・購入はできません。</strong></p>\n'
-            '      <p>DLsite および関連ロゴは各社の商標です。本サイトは非公式のキュレーションであり、エイシスとは無関係です。</p>\n'
+            '      <p><strong>18歳未満の方はご利用いただけません。</strong></p>\n'
+            '      <p>リンク先はDLsiteです。</p>\n'
             '      <p>© 同人ピック</p>\n'
             '      </div>\n'
             '    </div>\n'

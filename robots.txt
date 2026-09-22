@@ -1,6 +1,8 @@
 # 同人ピック robots.txt
 User-agent: *
 Allow: /
+Disallow: /scripts/
+Disallow: /data/
 
 # Absolute sitemap (set SITE_URL or js/config.js siteUrl before deploy)
 Sitemap: https://doujin-pick.github.io/sitemap.xml
