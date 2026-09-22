@@ -24,11 +24,27 @@
   /** Crawlable work detail path (SEO). Root pages → works/{id}.html; under /works/ → {id}.html */
   function workPageHref(id) {
     const path = location.pathname || "";
-    if (/\/works\//.test(path) || /\/tags\//.test(path)) {
-      if (/\/works\//.test(path)) return `${id}.html`;
-      return `../works/${id}.html`;
-    }
+    if (/\/works\//.test(path)) return `${id}.html`;
+    if (/\/tags\//.test(path) || /\/circles\//.test(path)) return `../works/${id}.html`;
     return `works/${id}.html`;
+  }
+
+  function circlePageHref(slug) {
+    const path = location.pathname || "";
+    if (/\/works\//.test(path) || /\/tags\//.test(path) || /\/circles\//.test(path)) {
+      return `../circles/${encodeURIComponent(slug)}.html`;
+    }
+    return `circles/${encodeURIComponent(slug)}.html`;
+  }
+
+  function circleSlug(name) {
+    return String(name || "")
+      .trim()
+      .replace(/[\\/]/g, "-")
+      .replace(/\s+/g, "-")
+      .replace(/[<>:"|?*]/g, "")
+      .replace(/-{2,}/g, "-")
+      .replace(/^-|-$/g, "") || "circle";
   }
 
   function escapeHtml(s) {
@@ -143,7 +159,9 @@
       .map((t) => `<button type="button" class="tag tag-btn" data-tag="${escapeHtml(t)}">${escapeHtml(t)}</button>`)
       .join("");
     const sample = work.sample ? `<span class="badge-sample">サンプル</span>` : "";
-    const sale = work.on_sale ? `<span class="badge-sale">セール</span>` : "";
+    const sale = work.on_sale
+      ? `<span class="badge-sale">${work.discount_percent ? escapeHtml(String(work.discount_percent)) + "%OFF" : "セール"}</span>`
+      : "";
     const favOn = isFav(work.id);
     const href = workPageHref(work.id);
     return `
@@ -547,22 +565,112 @@
     });
   }
 
+  function categoryPriority(w) {
+    if (w.category === "asmr") return 0;
+    if (w.category === "game") return 1;
+    return 2;
+  }
+
+  function pickFeatured(D) {
+    let featured = D.bySection("featured");
+    if (featured.length < 4) featured = allWorks.slice();
+    const scored = featured.slice().sort((a, b) => {
+      const pc = categoryPriority(a) - categoryPriority(b);
+      if (pc) return pc;
+      return (b.discount_percent || 0) - (a.discount_percent || 0);
+    });
+    // Prefer voice+game in the hero slot and companions
+    const voice = scored.filter((w) => w.category === "asmr");
+    const game = scored.filter((w) => w.category === "game");
+    const other = scored.filter((w) => w.category !== "asmr" && w.category !== "game");
+    const merged = [];
+    const seen = new Set();
+    function push(list) {
+      for (const w of list) {
+        if (seen.has(w.id)) continue;
+        seen.add(w.id);
+        merged.push(w);
+      }
+    }
+    // Interleave voice/game for denser monetization-aligned hero
+    const max = Math.max(voice.length, game.length);
+    for (let i = 0; i < max; i++) {
+      if (i < voice.length) push([voice[i]]);
+      if (i < game.length) push([game[i]]);
+    }
+    push(other);
+    return merged;
+  }
+
+  function renderCoverCollage(works) {
+    const el = document.getElementById("cover-collage");
+    if (!el) return;
+    const picks = (works || []).filter((w) => w.image_thumb || w.image).slice(0, 18);
+    if (!picks.length) {
+      el.innerHTML = "";
+      return;
+    }
+    el.innerHTML = picks
+      .map((w) => {
+        const src = w.image_thumb || w.image;
+        const href = workPageHref(w.id);
+        return `<a href="${escapeHtml(href)}" title="${escapeHtml(w.title || "")}" aria-label="${escapeHtml(w.title || "")}">
+          <img src="${escapeHtml(src)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+        </a>`;
+      })
+      .join("");
+  }
+
+  function renderCircleGrid(works) {
+    const el = document.getElementById("circle-grid");
+    if (!el) return;
+    // If SEO generator already injected static cards, keep them (crawlable).
+    if (el.querySelector(".circle-card")) return;
+    const counts = new Map();
+    const samples = new Map();
+    for (const w of works) {
+      const m = (w.maker || "").trim();
+      if (!m) continue;
+      counts.set(m, (counts.get(m) || 0) + 1);
+      if (!samples.has(m)) samples.set(m, []);
+      if (samples.get(m).length < 3 && (w.image_thumb || w.image)) {
+        samples.get(m).push(w.image_thumb || w.image);
+      }
+    }
+    const top = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "ja")).slice(0, 12);
+    el.innerHTML = top
+      .map(([name, n]) => {
+        const slug = circleSlug(name);
+        const thumbs = (samples.get(name) || [])
+          .map((src) => `<img src="${escapeHtml(src)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">`)
+          .join("");
+        return `<a class="circle-card" href="${escapeHtml(circlePageHref(slug))}">
+          <strong>${escapeHtml(name)}</strong>
+          <span>${n}作品</span>
+          <div class="circle-thumbs">${thumbs}</div>
+        </a>`;
+      })
+      .join("");
+  }
+
   function renderHome() {
     const D = window.DOJIN_DATA;
-    let featured = D.bySection("featured");
-    if (featured.length < 4) featured = allWorks.slice(0, 6);
+    const featured = pickFeatured(D);
     renderInto("#grid-featured", featured.slice(0, 5));
+    renderCoverCollage(featured.concat(D.byCategory("asmr"), D.byCategory("game")));
+
+    renderInto("#grid-genre-voice", D.byCategory("asmr").slice(0, 8));
+    renderInto("#grid-genre-game", D.byCategory("game").slice(0, 8));
+
+    let sale = D.onSale().length ? D.onSale() : D.bySection("sale");
+    const saleSorted = sale.slice().sort((a, b) => (b.discount_percent || 0) - (a.discount_percent || 0));
+    renderInto("#grid-sale", saleSorted.slice(0, 8));
 
     const popular = allWorks.slice(0, 8);
     renderInto("#grid-popular", popular);
 
-    let sale = D.onSale().length ? D.onSale() : D.bySection("sale");
-    const saleSorted = sale.slice().sort((a, b) => (b.discount_percent || 0) - (a.discount_percent || 0));
-    renderInto("#grid-sale", saleSorted.slice(0, 6));
-
-    renderInto("#grid-genre-voice", D.byCategory("asmr").slice(0, 4));
-    renderInto("#grid-genre-manga", D.byCategory("manga_cg").slice(0, 4));
-    renderInto("#grid-genre-game", D.byCategory("game").slice(0, 4));
+    renderInto("#grid-genre-manga", D.byCategory("manga_cg").slice(0, 6));
+    renderCircleGrid(allWorks);
     renderRecent();
   }
 
@@ -665,6 +773,8 @@
     affiliateHref,
     cardHtml,
     workPageHref,
+    circlePageHref,
+    circleSlug,
     renderInto,
     boot,
     openDrawer,

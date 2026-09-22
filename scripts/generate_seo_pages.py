@@ -4,6 +4,7 @@
 Outputs:
   works/{id}.html       — per-work detail (indexable)
   tags/{slug}.html      — top tag landings
+  circles/{slug}.html   — top circle guide pages (long-tail SEO)
   robots.txt
   sitemap.xml
   js/tag-cloud-data.js
@@ -31,9 +32,11 @@ DATA = ROOT / "data" / "works.json"
 CONFIG_JS = ROOT / "js" / "config.js"
 WORKS_DIR = ROOT / "works"
 TAGS_DIR = ROOT / "tags"
+CIRCLES_DIR = ROOT / "circles"
 DEFAULT_SITE_URL = "https://doujin-pick.example"
 SITE_NAME = "同人ピック"
 TAG_PAGE_LIMIT = 40
+CIRCLE_PAGE_LIMIT = 20
 RELATED_MIN = 3
 RELATED_MAX = 6
 
@@ -142,6 +145,39 @@ def tag_href(tag: str, prefix: str = "") -> str:
 
 def explore_tag_href(tag: str, prefix: str = "") -> str:
     return f"{prefix}explore.html?tag={quote(tag)}"
+
+
+def circle_slug(name: str) -> str:
+    """Filesystem-safe slug for circle guide pages (same rules as tags)."""
+    return tag_slug(name) or "circle"
+
+
+def circle_href(name: str, prefix: str = "") -> str:
+    slug = circle_slug(name)
+    return f"{prefix}circles/{quote(slug)}.html"
+
+
+def top_circles(works: list[dict], limit: int = CIRCLE_PAGE_LIMIT) -> list[tuple[str, int, list[dict]]]:
+    """Return [(maker, count, works_sorted)] for top circles by work count."""
+    buckets: dict[str, list[dict]] = {}
+    for w in works:
+        m = (w.get("maker") or "").strip()
+        if not m:
+            continue
+        buckets.setdefault(m, []).append(w)
+
+    def sort_key(w: dict):
+        cat = w.get("category") or ""
+        cat_rank = 0 if cat == "asmr" else (1 if cat == "game" else 2)
+        return (cat_rank, -(w.get("discount_percent") or 0), w.get("title") or "")
+
+    rows: list[tuple[str, int, list[dict]]] = []
+    for maker, ws in buckets.items():
+        ws_sorted = sorted(ws, key=sort_key)
+        rows.append((maker, len(ws_sorted), ws_sorted))
+    rows.sort(key=lambda x: (-x[1], x[0]))
+    return rows[:limit]
+
 
 
 def type_label(work: dict) -> str:
@@ -424,12 +460,64 @@ def generate_work_page(
     wid = work["id"]
     title = work.get("title") or wid
     maker = work.get("maker") or ""
+    maker_html = (
+        f'<a href="{esc(circle_href(maker, prefix="../"))}">{esc(maker)}</a>'
+        if maker else "サークル未記載"
+    )
     full_title = page_title(title, maker)
     desc = work_meta_description(title, maker, work.get("description") or "")
     canonical = abs_url(site_url, f"works/{wid}.html")
     image = work.get("image") or work.get("image_thumb") or ""
     cta = dlsite_cta(work)
     related = related_works(work, all_works)
+
+    circle_other_html = ""
+    if maker:
+        same = [
+            w for w in all_works
+            if (w.get("maker") or "").strip() == maker and w.get("id") != work.get("id")
+        ]
+        # Prefer voice/game, then title
+        def _ck(w: dict):
+            cat = w.get("category") or ""
+            return (0 if cat == "asmr" else 1 if cat == "game" else 2, w.get("title") or "")
+        same = sorted(same, key=_ck)[:8]
+        if same:
+            items = []
+            cards = []
+            for rw in same:
+                rid = rw["id"]
+                rtitle = rw.get("title") or rid
+                rimg = rw.get("image_thumb") or rw.get("image") or ""
+                img = (
+                    f'<img class="card-cover" src="{esc(rimg)}" alt="" loading="lazy" '
+                    f'decoding="async" referrerpolicy="no-referrer">'
+                    if rimg
+                    else f'<div class="card-cover placeholder"><span>{esc(rtitle[:12])}</span></div>'
+                )
+                cards.append(
+                    f"""        <article class="card">
+          <a class="card-media" href="{esc(rid)}.html" aria-label="{esc(rtitle)}">
+            {img}
+          </a>
+          <div class="card-body">
+            <h3 class="card-title"><a href="{esc(rid)}.html">{esc(rtitle)}</a></h3>
+            <div class="card-meta">{format_price_html(rw)}</div>
+          </div>
+        </article>"""
+                )
+                items.append(f'<li><a href="{esc(rid)}.html">{esc(rtitle)}</a></li>')
+            circle_other_html = f"""
+    <section class="section work-related circle-other-works">
+      <div class="container">
+        <div class="section-head"><h2>このサークルの他作品</h2><a href="{esc(circle_href(maker, prefix="../"))}">サークルページ →</a></div>
+        <ul class="related-title-list">
+          {chr(10).join("          " + x for x in items)}
+        </ul>
+        <div class="grid">{chr(10).join(cards)}
+        </div>
+      </div>
+    </section>"""
 
     product_ld = {
         "@context": "https://schema.org",
@@ -584,7 +672,7 @@ def generate_work_page(
           {sale_badge}
         </div>
         <div class="work-main">
-          <p class="work-maker">{esc(maker or "サークル未記載")}</p>
+          <p class="work-maker">{maker_html}</p>
           <h1 class="work-title">{esc(title)}</h1>
           <p class="work-lead">{esc(lead)}{esc(lead_extra)}</p>
           <div class="drawer-actions work-actions">
@@ -617,6 +705,7 @@ def generate_work_page(
         </section>
       </div>
     </article>
+{circle_other_html}
 {related_html}
   </main>
 {footer_html(1, tags_footer, updated_at)}
@@ -753,6 +842,153 @@ def generate_tag_page(
 """
 
 
+
+def generate_circle_page(
+    maker: str,
+    count: int,
+    works: list[dict],
+    site_url: str,
+    top_tags: list[tuple[str, int]],
+    updated_at: str,
+    slug: str | None = None,
+) -> str:
+    slug = slug or circle_slug(maker)
+    full_title = f"{maker}のおすすめ同人｜{SITE_NAME}"
+    desc = meta_description(
+        f"{maker}の同人作品おすすめ（{count}件）。ボイス・ASMRやゲームを中心に、{SITE_NAME}で紹介しています。",
+        f"{maker} — {SITE_NAME}",
+        lo=40,
+        hi=120,
+    )
+    canonical = abs_url(site_url, f"circles/{slug}.html")
+    image = ""
+    for w in works:
+        image = w.get("image") or w.get("image_thumb") or ""
+        if image:
+            break
+
+    item_list = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": full_title,
+        "description": desc,
+        "url": canonical,
+        "about": {"@type": "Organization", "name": maker},
+        "mainEntity": {
+            "@type": "ItemList",
+            "numberOfItems": len(works),
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": i + 1,
+                    "url": abs_url(site_url, f"works/{w['id']}.html"),
+                    "name": w.get("title") or w["id"],
+                }
+                for i, w in enumerate(works[:50])
+            ],
+        },
+    }
+    breadcrumb_ld = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "ホーム", "item": abs_url(site_url, "index.html")},
+            {"@type": "ListItem", "position": 2, "name": "サークル", "item": abs_url(site_url, "index.html") + "#circles-section"},
+            {"@type": "ListItem", "position": 3, "name": maker, "item": canonical},
+        ],
+    }
+
+    cards = []
+    for w in works:
+        wid = w["id"]
+        wtitle = w.get("title") or wid
+        wimg = w.get("image_thumb") or w.get("image") or ""
+        img = (
+            f'<img class="card-cover" src="{esc(wimg)}" alt="" loading="lazy" '
+            f'decoding="async" referrerpolicy="no-referrer">'
+            if wimg
+            else f'<div class="card-cover placeholder"><span>{esc(wtitle[:12])}</span></div>'
+        )
+        sale = ""
+        if w.get("on_sale"):
+            if w.get("discount_percent"):
+                sale = f'<span class="badge-sale">{int(w["discount_percent"])}%OFF</span>'
+            else:
+                sale = '<span class="badge-sale">セール</span>'
+        cta = dlsite_cta(w)
+        cards.append(
+            f"""        <article class="card">
+          <a class="card-media" href="../works/{esc(wid)}.html" aria-label="{esc(wtitle)}">
+            {img}{sale}
+          </a>
+          <div class="card-body">
+            <h2 class="card-title"><a href="../works/{esc(wid)}.html">{esc(wtitle)}</a></h2>
+            <div class="card-meta">{format_price_html(w)} <span class="work-type">{esc(type_label(w))}</span></div>
+            <div class="card-open"><a class="btn-cta" href="{esc(cta)}" target="_blank" rel="noopener noreferrer">DLsiteで見る</a></div>
+          </div>
+        </article>"""
+        )
+
+    voice_n = sum(1 for w in works if w.get("category") == "asmr")
+    game_n = sum(1 for w in works if w.get("category") == "game")
+    focus_bits = []
+    if voice_n:
+        focus_bits.append(f"ボイス・ASMR {voice_n}件")
+    if game_n:
+        focus_bits.append(f"ゲーム {game_n}件")
+    focus = "、".join(focus_bits) if focus_bits else "同人作品"
+    intro = (
+        f"{maker}の同人作品を、{SITE_NAME}がカタログからピックアップしています。"
+        f"掲載は{count}件（{focus}）。気になる作品は各ページからDLsiteで詳細・購入できます。"
+    )
+
+    head = shell_head(
+        title=full_title,
+        description=desc,
+        canonical=canonical,
+        og_type="website",
+        image=image,
+        depth=1,
+        json_ld=[item_list, breadcrumb_ld],
+        indexable=True,
+    )
+    tags_footer = popular_tags_block(top_tags[:16], depth=1, heading="人気タグ")
+
+    return f"""{head}
+<body data-page="circle" data-circle="{esc(maker)}">
+{age_gate_html()}
+{header_nav(depth=1, active="explore")}
+  <main>
+    <div class="container page-hero circle-page-hero">
+      <nav class="breadcrumb" aria-label="パンくず">
+        <a href="../index.html">ホーム</a>
+        <span aria-hidden="true">/</span>
+        <a href="../index.html#circles-section">サークル</a>
+        <span aria-hidden="true">/</span>
+        <span>{esc(maker)}</span>
+      </nav>
+      <h1>{esc(maker)}のおすすめ同人</h1>
+      <p class="lede">{esc(intro)}</p>
+      <p class="circle-works-count">{count}件の作品</p>
+    </div>
+    <section class="section" style="padding-top:0.5rem">
+      <div class="container">
+        <div class="grid">
+{chr(10).join(cards)}
+        </div>
+        <p style="margin-top:1.25rem">
+          <a class="btn-cta" href="../explore.html?q={quote(maker)}">カタログで「{esc(maker)}」を探す</a>
+        </p>
+      </div>
+    </section>
+  </main>
+{footer_html(1, tags_footer, updated_at)}
+{scripts_block(1)}
+</body>
+</html>
+"""
+
+
 def write_llms_txt(site_url: str) -> None:
     """Optional llms.txt for AI/crawler discoverability (skip-safe if unused)."""
     text = f"""# 同人ピック
@@ -770,6 +1006,9 @@ Sitemap: {site_url}/sitemap.xml
 
 ## 作品ページ
 各作品は {site_url}/works/{{id}}.html （紹介・タグ・価格）
+
+## サークルガイド
+主要サークルは {site_url}/circles/{{slug}}.html （サークルのおすすめ同人）
 """
     (ROOT / "llms.txt").write_text(text, encoding="utf-8")
 
@@ -793,6 +1032,7 @@ def write_sitemap(
     works: list[dict],
     tag_slugs: list[str],
     updated_at: str,
+    circle_slugs: list[str] | None = None,
 ) -> int:
     lm = lastmod_iso(updated_at)
     urls: list[tuple[str, str, str]] = []
@@ -810,11 +1050,13 @@ def write_sitemap(
         urls.append((abs_url(site_url, f"works/{w['id']}.html"), lm, "0.8"))
     for slug in tag_slugs:
         urls.append((abs_url(site_url, f"tags/{slug}.html"), lm, "0.6"))
+    for slug in circle_slugs or []:
+        urls.append((abs_url(site_url, f"circles/{slug}.html"), lm, "0.65"))
 
     lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-        f"  <!-- siteUrl={site_url} ; path-only mirrors: /index.html /explore.html /works/{{id}}.html /tags/{{slug}}.html -->",
+        f"  <!-- siteUrl={site_url} ; path-only mirrors: /index.html /explore.html /works/{{id}}.html /tags/{{slug}}.html /circles/{{slug}}.html -->",
     ]
     for loc, lastmod, pri in urls:
         lines.append("  <url>")
@@ -993,12 +1235,18 @@ def ensure_homepage_brand_seo(text: str, site_url: str, works: list[dict] | None
     """Visible brand H1/intro + WebSite/Organization JSON-LD + noscript title links."""
     # H1 must contain exact 同人ピック
     h1_block = (
-        "<h1>同人ピック — 気になる同人を、<br>かんたんに見つける。</h1>\n"
-        '          <p class="lede">同人ピックは、DLsiteの同人作品を人気・セール・ジャンルから'
-        "探しやすくまとめたガイドです。気になる作品を同人ピックで見つけて、購入はDLsiteで行えます。</p>"
+        '<h1 class="home-title">'
+        '<span class="home-title-brand nowrap">同人ピック</span>'
+        '<span class="home-title-sub">'
+        '<span class="nowrap">気になる同人を、</span><wbr>'
+        '<span class="nowrap">かんたんに見つける</span>'
+        "</span></h1>\n"
+        '          <p class="lede">'
+        '<span class="lede-line nowrap">人気・セール・形式から、同人をかんたんに。</span>\n'
+        '          <span class="lede-line nowrap">気になる作品を見つけて、購入はDLsiteで。</span></p>'
     )
     text2, n = re.subn(
-        r"<h1>.*?</h1>\s*<p class=\"lede\">.*?</p>",
+        r"<h1\b[^>]*>.*?</h1>\s*<p class=\"lede\">.*?</p>",
         h1_block,
         text,
         count=1,
@@ -1007,9 +1255,9 @@ def ensure_homepage_brand_seo(text: str, site_url: str, works: list[dict] | None
     if n:
         text = text2
     else:
-        # Fallback: inject after home-intro-grid opening content div
+        # Fallback: inject after home-intro-grid / ja-wrap opening
         text = re.sub(
-            r'(<div class="container home-intro-grid">\s*<div>)',
+            r'(<div class="(?:container )?home-intro-grid">\s*<div(?: class="ja-wrap")?>)',
             r"\1\n          " + h1_block,
             text,
             count=1,
@@ -1096,6 +1344,49 @@ def ensure_homepage_brand_seo(text: str, site_url: str, works: list[dict] | None
         else:
             text = text.replace("</main>", f"    {block}\n  </main>", 1)
 
+    # Crawlable circle guide links on home
+    circles = top_circles(works, CIRCLE_PAGE_LIMIT)
+    if circles:
+        cards = []
+        for maker, n, ws in circles:
+            thumbs = []
+            for w in ws[:3]:
+                src_img = w.get("image_thumb") or w.get("image") or ""
+                if src_img:
+                    thumbs.append(
+                        f'<img src="{esc(src_img)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">'
+                    )
+            cards.append(
+                f'<a class="circle-card" href="{esc(circle_href(maker))}">'
+                f"<strong>{esc(maker)}</strong>"
+                f"<span>{n}作品</span>"
+                f'<div class="circle-thumbs">{"".join(thumbs)}</div>'
+                f"</a>"
+            )
+        circle_block = (
+            "<!-- SEO_HOME_CIRCLES -->\n"
+            f'<div class="circle-grid" id="circle-grid">{"".join(cards)}</div>\n'
+            "<!-- /SEO_HOME_CIRCLES -->"
+        )
+        if "<!-- SEO_HOME_CIRCLES -->" in text and "<!-- /SEO_HOME_CIRCLES -->" in text:
+            text = re.sub(
+                re.escape("<!-- SEO_HOME_CIRCLES -->")
+                + r".*?"
+                + re.escape("<!-- /SEO_HOME_CIRCLES -->"),
+                circle_block,
+                text,
+                count=1,
+                flags=re.S,
+            )
+        elif 'id="circle-grid"' in text:
+            text = re.sub(
+                r'<div class="circle-grid" id="circle-grid">.*?</div>',
+                f'<div class="circle-grid" id="circle-grid">{"".join(cards)}</div>',
+                text,
+                count=1,
+                flags=re.S,
+            )
+
     return text
 
 
@@ -1115,6 +1406,14 @@ def sync_tag_dir(slugs: set[str]) -> None:
     TAGS_DIR.mkdir(parents=True, exist_ok=True)
     wanted = {f"{s}.html" for s in slugs}
     for existing in TAGS_DIR.glob("*.html"):
+        if existing.name not in wanted:
+            existing.unlink()
+
+
+def sync_circle_dir(slugs: set[str]) -> None:
+    CIRCLES_DIR.mkdir(parents=True, exist_ok=True)
+    wanted = {f"{s}.html" for s in slugs}
+    for existing in CIRCLES_DIR.glob("*.html"):
         if existing.name not in wanted:
             existing.unlink()
 
@@ -1163,8 +1462,25 @@ def main() -> int:
         tag_slugs.append(slug)
     sync_tag_dir(slug_set)
 
+    # Circle guide pages (top N by work count)
+    CIRCLES_DIR.mkdir(parents=True, exist_ok=True)
+    circle_slugs: list[str] = []
+    circle_slug_set: set[str] = set()
+    for maker, n, matched in top_circles(works, CIRCLE_PAGE_LIMIT):
+        slug = circle_slug(maker)
+        base = slug
+        i = 2
+        while slug in circle_slug_set:
+            slug = f"{base}-{i}"
+            i += 1
+        circle_slug_set.add(slug)
+        page = generate_circle_page(maker, n, matched, site_url, top_tags, updated_at, slug=slug)
+        (CIRCLES_DIR / f"{slug}.html").write_text(page, encoding="utf-8")
+        circle_slugs.append(slug)
+    sync_circle_dir(circle_slug_set)
+
     write_robots(site_url)
-    url_count = write_sitemap(site_url, works, tag_slugs, updated_at)
+    url_count = write_sitemap(site_url, works, tag_slugs, updated_at, circle_slugs)
     write_tag_cloud_js(top_tags)
     write_llms_txt(site_url)
     global _INDEX_WORKS_CACHE
@@ -1173,7 +1489,7 @@ def main() -> int:
 
     print(
         f"SEO: {len(works)} work pages, {len(tag_slugs)} tag pages, "
-        f"sitemap urls={url_count}, siteUrl={site_url}"
+        f"{len(circle_slugs)} circle pages, sitemap urls={url_count}, siteUrl={site_url}"
     )
     return 0
 

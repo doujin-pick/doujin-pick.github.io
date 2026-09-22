@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- siteUrl=https://doujin-pick.github.io ; path-only mirrors: /index.html /explore.html /works/{id}.html /tags/{slug}.html -->
+  <!-- siteUrl=https://doujin-pick.github.io ; path-only mirrors: /index.html /explore.html /works/{id}.html /tags/{slug}.html /circles/{slug}.html -->
   <url>
     <loc>https://doujin-pick.github.io/index.html</loc>
     <lastmod>2026-09-23</lastmod>
@@ -1725,5 +1725,105 @@
     <loc>https://doujin-pick.github.io/tags/トランス-暗示.html</loc>
     <lastmod>2026-09-23</lastmod>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://doujin-pick.github.io/circles/Yostar.html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <priority>0.65</priority>
+  </url>
+  <url>
+    <loc>https://doujin-pick.github.io/circles/ONEONE1.html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <priority>0.65</priority>
+  </url>
+  <url>
+    <loc>https://doujin-pick.github.io/circles/ベルゼブブ.html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <priority>0.65</priority>
+  </url>
+  <url>
+    <loc>https://doujin-pick.github.io/circles/Big-S-Studio.html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <priority>0.65</priority>
+  </url>
+  <url>
+    <loc>https://doujin-pick.github.io/circles/I&#x27;m-moralist.html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <priority>0.65</priority>
+  </url>
+  <url>
+    <loc>https://doujin-pick.github.io/circles/WAKUWAKU.html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <priority>0.65</priority>
+  </url>
+  <url>
+    <loc>https://doujin-pick.github.io/circles/とろとろレジスタンス.html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <priority>0.65</priority>
+  </url>
+  <url>
+    <loc>https://doujin-pick.github.io/circles/ぺぺろんちーの.html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <priority>0.65</priority>
+  </url>
+  <url>
+    <loc>https://doujin-pick.github.io/circles/マヨタマ.html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <priority>0.65</priority>
+  </url>
+  <url>
+    <loc>https://doujin-pick.github.io/circles/HIKE.html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <priority>0.65</priority>
+  </url>
+  <url>
+    <loc>https://doujin-pick.github.io/circles/SORAREVO.html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <priority>0.65</priority>
+  </url>
+  <url>
+    <loc>https://doujin-pick.github.io/circles/TeamKRAMA.html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <priority>0.65</priority>
+  </url>
+  <url>
+    <loc>https://doujin-pick.github.io/circles/azucat.html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <priority>0.65</priority>
+  </url>
+  <url>
+    <loc>https://doujin-pick.github.io/circles/あぷりこ工房.html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <priority>0.65</priority>
+  </url>
+  <url>
+    <loc>https://doujin-pick.github.io/circles/おいなりソフト(肩引こ).html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <priority>0.65</priority>
+  </url>
+  <url>
+    <loc>https://doujin-pick.github.io/circles/くろごまナイツ.html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <priority>0.65</priority>
+  </url>
+  <url>
+    <loc>https://doujin-pick.github.io/circles/しもばしら工房.html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <priority>0.65</priority>
+  </url>
+  <url>
+    <loc>https://doujin-pick.github.io/circles/すてねこLAB..html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <priority>0.65</priority>
+  </url>
+  <url>
+    <loc>https://doujin-pick.github.io/circles/たにし.html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <priority>0.65</priority>
+  </url>
+  <url>
+    <loc>https://doujin-pick.github.io/circles/たわわデリバリー.html</loc>
+    <lastmod>2026-09-23</lastmod>
+    <priority>0.65</priority>
   </url>
 </urlset>

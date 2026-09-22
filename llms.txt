@@ -13,3 +13,6 @@ Sitemap: https://doujin-pick.github.io/sitemap.xml
 
 ## 作品ページ
 各作品は https://doujin-pick.github.io/works/{id}.html （紹介・タグ・価格）
+
+## サークルガイド
+主要サークルは https://doujin-pick.github.io/circles/{slug}.html （サークルのおすすめ同人）

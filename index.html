@@ -22,7 +22,7 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"同人ピック","url":"https://doujin-pick.github.io/index.html"}</script>
 </head>
 <body data-page="home">
-    <div id="age-gate">
+  <div id="age-gate">
     <div class="age-panel">
       <h2>年齢確認</h2>
       <p>18歳以上ですか？</p>
@@ -31,7 +31,6 @@
         <button type="button" class="btn" id="age-no">いいえ</button>
       </div>
     </div>
-  </div>
   </div>
   <header class="site-header">
     <div class="container header-inner">
@@ -65,16 +64,23 @@
   <main>
     <section class="home-intro">
       <div class="container home-intro-grid">
-        <div>
-                    <h1>同人ピック — 気になる同人を、<br>かんたんに見つける。</h1>
-          <p class="lede">同人ピックは、DLsiteの同人作品を人気・セール・ジャンルから探しやすくまとめたガイドです。気になる作品を同人ピックで見つけて、購入はDLsiteで行えます。</p>
+        <div class="ja-wrap">
+          <h1 class="home-title"><span class="home-title-brand nowrap">同人ピック</span><span class="home-title-sub"><span class="nowrap">気になる同人を、</span><wbr><span class="nowrap">かんたんに見つける</span></span></h1>
+          <p class="lede"><span class="lede-line nowrap">人気・セール・形式から、同人をかんたんに。</span>
+          <span class="lede-line nowrap">気になる作品を見つけて、購入はDLsiteで。</span></p>
         </div>
         <div class="shortcut-board" aria-label="ショートカット">
-          <a class="shortcut" href="explore.html"><strong>すべて探す</strong><span>検索＋絞り込み</span></a>
-          <a class="shortcut" href="sale.html"><strong>セール</strong><span>割引率の高い順</span></a>
-          <a class="shortcut" href="explore.html?type=voice"><strong>ボイス・ASMR</strong><span>音声作品</span></a>
+          <a class="shortcut" href="explore.html?type=voice"><strong>ボイス・ASMR</strong><span>音声作品から探す</span></a>
           <a class="shortcut" href="explore.html?type=game"><strong>ゲーム</strong><span>同人ゲーム</span></a>
+          <a class="shortcut" href="sale.html"><strong>セール</strong><span>割引率の高い順</span></a>
+          <a class="shortcut" href="explore.html"><strong>すべて探す</strong><span>検索＋絞り込み</span></a>
         </div>
+      </div>
+    </section>
+
+    <section class="cover-collage-wrap" aria-label="カバー一覧">
+      <div class="container">
+        <div class="cover-collage" id="cover-collage"></div>
       </div>
     </section>
 
@@ -87,7 +93,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section section-ruled">
       <div class="container">
         <div class="section-head">
           <h2>おすすめ</h2>
@@ -97,17 +103,21 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section section-ruled">
       <div class="container">
-        <div class="section-head">
-          <h2>人気の作品</h2>
-          <a href="ranking.html">もっと →</a>
-        </div>
-        <div class="grid" id="grid-popular"></div>
+        <div class="section-head"><h2>ボイス・ASMR</h2><a href="explore.html?type=voice">もっと →</a></div>
+        <div class="grid" id="grid-genre-voice"></div>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section section-ruled">
+      <div class="container">
+        <div class="section-head"><h2>ゲーム</h2><a href="explore.html?type=game">もっと →</a></div>
+        <div class="grid" id="grid-genre-game"></div>
+      </div>
+    </section>
+
+    <section class="section section-ruled">
       <div class="container">
         <div class="section-head">
           <h2>セール中の作品</h2>
@@ -117,22 +127,41 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section section-ruled">
       <div class="container">
-        <div class="section-head"><h2>ボイス・ASMR</h2><a href="explore.html?type=voice">もっと →</a></div>
-        <div class="grid" id="grid-genre-voice"></div>
-        <div class="section-head" style="margin-top:1.5rem"><h2>マンガ / CG</h2><a href="explore.html?type=manga_cg">もっと →</a></div>
-        <div class="grid" id="grid-genre-manga"></div>
-        <div class="section-head" style="margin-top:1.5rem"><h2>ゲーム</h2><a href="explore.html?type=game">もっと →</a></div>
-        <div class="grid" id="grid-genre-game"></div>
+        <div class="section-head">
+          <h2>人気の作品</h2>
+          <a href="ranking.html">もっと →</a>
+        </div>
+        <div class="grid" id="grid-popular"></div>
       </div>
     </section>
+
+    <section class="section section-ruled">
+      <div class="container">
+        <div class="section-head"><h2>マンガ / CG</h2><a href="explore.html?type=manga_cg">もっと →</a></div>
+        <div class="grid" id="grid-genre-manga"></div>
+      </div>
+    </section>
+
+    <section class="section section-ruled" id="circles-section">
+      <div class="container">
+        <div class="section-head">
+          <h2>サークルから探す</h2>
+          <a href="explore.html">すべて探す →</a>
+        </div>
+        <!-- SEO_HOME_CIRCLES -->
+<div class="circle-grid" id="circle-grid"><a class="circle-card" href="circles/Yostar.html"><strong>Yostar</strong><span>6作品</span><div class="circle-thumbs"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01548000/RJ01547253_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01548000/RJ01547274_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01679000/RJ01678210_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></div></a><a class="circle-card" href="circles/ONEONE1.html"><strong>ONEONE1</strong><span>5作品</span><div class="circle-thumbs"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01060000/RJ01059576_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ247000/RJ246037_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ323000/RJ322248_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></div></a><a class="circle-card" href="circles/%E3%83%99%E3%83%AB%E3%82%BC%E3%83%96%E3%83%96.html"><strong>ベルゼブブ</strong><span>5作品</span><div class="circle-thumbs"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01155000/RJ01154711_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01558000/RJ01557970_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ326000/RJ325126_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></div></a><a class="circle-card" href="circles/Big-S-Studio.html"><strong>Big S Studio</strong><span>3作品</span><div class="circle-thumbs"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ385000/RJ384983_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01118000/RJ01117570_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01387000/RJ01386956_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></div></a><a class="circle-card" href="circles/I%27m-moralist.html"><strong>I&#x27;m moralist</strong><span>3作品</span><div class="circle-thumbs"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ318000/RJ317690_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ403000/RJ402577_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01187000/RJ01186021_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></div></a><a class="circle-card" href="circles/WAKUWAKU.html"><strong>WAKUWAKU</strong><span>3作品</span><div class="circle-thumbs"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01054000/RJ01053661_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01104000/RJ01103194_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01364000/RJ01363303_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></div></a><a class="circle-card" href="circles/%E3%81%A8%E3%82%8D%E3%81%A8%E3%82%8D%E3%83%AC%E3%82%B8%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9.html"><strong>とろとろレジスタンス</strong><span>3作品</span><div class="circle-thumbs"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ202000/RJ201109_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ151000/RJ150726_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01115000/RJ01114724_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></div></a><a class="circle-card" href="circles/%E3%81%BA%E3%81%BA%E3%82%8D%E3%82%93%E3%81%A1%E3%83%BC%E3%81%AE.html"><strong>ぺぺろんちーの</strong><span>3作品</span><div class="circle-thumbs"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ292000/RJ291561_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ325000/RJ324247_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ344000/RJ343069_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></div></a><a class="circle-card" href="circles/%E3%83%9E%E3%83%A8%E3%82%BF%E3%83%9E.html"><strong>マヨタマ</strong><span>3作品</span><div class="circle-thumbs"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01530000/RJ01529215_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01676000/RJ01675713_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01642000/RJ01641249_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></div></a><a class="circle-card" href="circles/HIKE.html"><strong>HIKE</strong><span>2作品</span><div class="circle-thumbs"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01571000/RJ01570721_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01571000/RJ01570739_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></div></a><a class="circle-card" href="circles/SORAREVO.html"><strong>SORAREVO</strong><span>2作品</span><div class="circle-thumbs"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01007000/RJ01006720_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01557000/RJ01556529_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></div></a><a class="circle-card" href="circles/TeamKRAMA.html"><strong>TeamKRAMA</strong><span>2作品</span><div class="circle-thumbs"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ331000/RJ330023_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01326000/RJ01325945_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></div></a><a class="circle-card" href="circles/azucat.html"><strong>azucat</strong><span>2作品</span><div class="circle-thumbs"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01117000/RJ01116084_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01550000/RJ01549139_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></div></a><a class="circle-card" href="circles/%E3%81%82%E3%81%B7%E3%82%8A%E3%81%93%E5%B7%A5%E6%88%BF.html"><strong>あぷりこ工房</strong><span>2作品</span><div class="circle-thumbs"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ325000/RJ324709_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01653000/RJ01652728_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></div></a><a class="circle-card" href="circles/%E3%81%8A%E3%81%84%E3%81%AA%E3%82%8A%E3%82%BD%E3%83%95%E3%83%88%28%E8%82%A9%E5%BC%95%E3%81%93%29.html"><strong>おいなりソフト(肩引こ)</strong><span>2作品</span><div class="circle-thumbs"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ402000/RJ401895_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01711000/RJ01710819_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></div></a><a class="circle-card" href="circles/%E3%81%8F%E3%82%8D%E3%81%94%E3%81%BE%E3%83%8A%E3%82%A4%E3%83%84.html"><strong>くろごまナイツ</strong><span>2作品</span><div class="circle-thumbs"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01520000/RJ01519862_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01697000/RJ01696518_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></div></a><a class="circle-card" href="circles/%E3%81%97%E3%82%82%E3%81%B0%E3%81%97%E3%82%89%E5%B7%A5%E6%88%BF.html"><strong>しもばしら工房</strong><span>2作品</span><div class="circle-thumbs"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ387000/RJ386773_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ298000/RJ297120_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></div></a><a class="circle-card" href="circles/%E3%81%99%E3%81%A6%E3%81%AD%E3%81%93LAB..html"><strong>すてねこLAB.</strong><span>2作品</span><div class="circle-thumbs"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01036000/RJ01035443_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01553000/RJ01552098_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></div></a><a class="circle-card" href="circles/%E3%81%9F%E3%81%AB%E3%81%97.html"><strong>たにし</strong><span>2作品</span><div class="circle-thumbs"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01582000/RJ01581737_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01706000/RJ01705304_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></div></a><a class="circle-card" href="circles/%E3%81%9F%E3%82%8F%E3%82%8F%E3%83%87%E3%83%AA%E3%83%90%E3%83%AA%E3%83%BC.html"><strong>たわわデリバリー</strong><span>2作品</span><div class="circle-thumbs"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01179000/RJ01178024_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><img src="https://img.dlsite.jp/resize/images2/work/doujin/RJ01395000/RJ01394659_img_main_240x240.webp" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"></div></a></div>
+<!-- /SEO_HOME_CIRCLES -->
+      </div>
+    </section>
+
       <!-- SEO_HOME_WORK_LINKS -->
 <noscript class="seo-home-works"><div class="container"><h2>掲載作品</h2><ul><li><a href="works/RJ328940.html">カルティベーター ～引退騎士とモン娘のにぎやか開拓記～</a></li><li><a href="works/RJ01688423.html">404号室の性感マッサージ【追加ヒロインDLC ～リオン&amp;コハル～】</a></li><li><a href="works/RJ01691692.html">パパ活パンデミクス - 女子大生ビッチ化計画 -</a></li><li><a href="works/RJ01618221.html">アリナと淫魔の呪い</a></li><li><a href="works/RJ01681172.html">ASTREIA -アストレイア-</a></li><li><a href="works/RJ01641249.html">【10/10日まで 早期限定340大特典】～孕ませアトリエ～ 見習い錬金術師のボクと…ドスケベ爆乳女錬金術師×3による♪…秘密の子作り孕ませアトリエ♪</a></li><li><a href="works/RJ01672049.html">ふたなり女騎士セレナ ～呪われし搾精迷宮～ 入った瞬間からデカちんぽつけられてどぴゅどぴゅザーメンを絞られましたぁぁぁ</a></li><li><a href="works/RJ01676425.html">魔法少女シルフィーナ</a></li><li><a href="works/RJ01617096.html">状態異常 =Abnormal Condition= ～酩酊/憑依/改変/苗床編～</a></li><li><a href="works/RJ357058.html">Last12 - 勇者の恥ずかしい育児日記 -</a></li><li><a href="works/RJ01710819.html">モブ娘ギルドメーカー</a></li><li><a href="works/RJ01529614.html">まぐわれ異世界珍道中</a></li><li><a href="works/RJ01556529.html">HOME</a></li><li><a href="works/RJ01709277.html">パンドラ・ケージ～宇宙調査員の恋人は触手生物に寝取られる～</a></li><li><a href="works/RJ01447723.html">堕ちた聖樹の乙女 セレナ</a></li><li><a href="works/RJ01612664.html">雪音の仇討ち物語</a></li><li><a href="works/RJ01702695.html">とある冒険者街の性体店！</a></li><li><a href="works/RJ01702354.html">搾廊 ～爆乳の異形が徘徊するループからの脱出～</a></li><li><a href="works/RJ01442791.html">時姦勇者</a></li><li><a href="works/RJ01386956.html">ライフガードホリック</a></li><li><a href="works/RJ01696518.html">にゃくろのみこん！DLC</a></li><li><a href="works/RJ01700709.html">マゾオナサポカジノ</a></li><li><a href="works/RJ01436394.html">背徳の聖職者とカクテル  ―― 洗脳された祈り子たち</a></li><li><a href="works/RJ01519862.html">にゃくろのみこん！</a></li></ul></div></noscript>
 <!-- /SEO_HOME_WORK_LINKS -->
   </main>
 
-                      <footer class="site-footer">
+                        <footer class="site-footer">
     <div class="container">
       <!-- SEO_FOOTER_TAGS -->
       <nav class="footer-tags" aria-label="人気タグ">
