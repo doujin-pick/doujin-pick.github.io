@@ -22,7 +22,7 @@ JST = timezone(timedelta(hours=9))
 UA = "Mozilla/5.0 (compatible; DojinPickBot/1.0; +local; curation updater)"
 
 # Cap unique works enriched with detail pages (runtime / politeness)
-ENRICH_LIMIT = 800
+ENRICH_LIMIT = 1500
 ENRICH_CAP = ENRICH_LIMIT  # alias
 RANKING_PARSE_LIMIT = 100  # IDs per ranking/list page
 SLEEP_MIN, SLEEP_MAX = 0.3, 0.6
@@ -80,6 +80,34 @@ SOURCES = [
     ("https://www.dlsite.com/home/ranking/month", "home_ranking_month", ["featured"], "home_ranking_month.html"),
     ("https://www.dlsite.com/home/ranking/week", "home_ranking_week", ["featured"], "home_ranking_week.html"),
     ("https://www.dlsite.com/home/ranking/day", "home_ranking_day", ["featured"], "home_ranking_day.html"),
+    # === Extra pages / releases to push unique catalog toward ENRICH_LIMIT ===
+    ("https://www.dlsite.com/maniax/fsr/=/order/dl_d/per_page/100/page/2", "bestsellers_dl_p2", ["featured", "ranking"], "bestsellers_dl_p2.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/audio/order/dl_d/per_page/100/page/2", "bestsellers_voice_p2", ["featured", "genre_asmr"], "bestsellers_voice_p2.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/game/order/dl_d/per_page/100/page/2", "bestsellers_game_p2", ["featured", "genre_game"], "bestsellers_game_p2.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/comic/order/dl_d/per_page/100/page/2", "bestsellers_comic_p2", ["genre_manga"], "bestsellers_comic_p2.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/SOU/order/dl_d/per_page/100/page/2", "bestsellers_sou_p2", ["featured", "genre_asmr"], "bestsellers_sou_p2.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/RPG/order/dl_d/per_page/100", "bestsellers_rpg100", ["genre_game"], "bestsellers_rpg100.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/ADV/order/dl_d/per_page/100", "bestsellers_adv100", ["genre_game"], "bestsellers_adv100.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/SIM/order/dl_d/per_page/100", "bestsellers_sim100", ["genre_game"], "bestsellers_sim100.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/ICG/order/dl_d/per_page/100", "bestsellers_icg100", ["genre_manga"], "bestsellers_icg100.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/MNG/order/dl_d/per_page/100", "bestsellers_mng100", ["genre_manga"], "bestsellers_mng100.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/MOV/order/dl_d/per_page/100", "bestsellers_mov", ["featured"], "bestsellers_mov.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/order/release_d/per_page/100", "release_new", ["featured"], "release_new.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/audio/order/release_d/per_page/100", "release_voice", ["featured", "genre_asmr"], "release_voice.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/game/order/release_d/per_page/100", "release_game", ["genre_game"], "release_game.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/comic/order/release_d/per_page/100", "release_comic", ["genre_manga"], "release_comic.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/order/trend/per_page/100/page/2", "trend_p2", ["featured"], "trend_p2.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/SOU/order/trend/per_page/100", "trend_voice100", ["featured", "genre_asmr"], "trend_voice100.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/game/order/trend/per_page/100", "trend_game100", ["genre_game"], "trend_game100.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/discount/1/order/dl_d/per_page/100/page/2", "sale_discount_p2", ["sale"], "sale_discount_p2.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/discount/1/order/trend/per_page/100", "sale_trend", ["sale"], "sale_trend.html"),
+    ("https://www.dlsite.com/maniax/ranking/month/=/category/illust", "ranking_illust_month", ["genre_manga"], "ranking_illust_month.html"),
+    ("https://www.dlsite.com/maniax/ranking/week/=/category/illust", "ranking_illust_week", ["genre_manga"], "ranking_illust_week.html"),
+    ("https://www.dlsite.com/home/fsr/=/order/dl_d/per_page/100", "home_bestsellers_dl", ["featured", "ranking"], "home_bestsellers_dl.html"),
+    ("https://www.dlsite.com/home/fsr/=/order/dl_d/per_page/100/page/2", "home_bestsellers_dl_p2", ["featured", "ranking"], "home_bestsellers_dl_p2.html"),
+    ("https://www.dlsite.com/home/new", "home_new", ["featured"], "home_new.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/order/price_d/per_page/100", "price_desc", ["featured"], "price_desc.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/audio/order/price_d/per_page/50", "price_voice", ["genre_asmr"], "price_voice.html"),
 ]
 
 DLSITE_BOILER = re.compile(
