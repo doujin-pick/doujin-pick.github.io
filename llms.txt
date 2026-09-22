@@ -1,0 +1,15 @@
+# 同人ピック
+> DLsiteの同人作品を、人気・セール・ジャンルから探しやすくまとめたガイド（18歳以上向け）
+
+サイト名: 同人ピック
+URL: https://doujin-pick.github.io/
+Sitemap: https://doujin-pick.github.io/sitemap.xml
+
+## 主要ページ
+- [ホーム](https://doujin-pick.github.io/index.html): おすすめ・人気・セールの入口
+- [探す](https://doujin-pick.github.io/explore.html): タイトル・サークル・タグ検索
+- [人気](https://doujin-pick.github.io/ranking.html): 人気ランキング
+- [セール](https://doujin-pick.github.io/sale.html): 割引中の作品
+
+## 作品ページ
+各作品は https://doujin-pick.github.io/works/{id}.html （紹介・タグ・価格）

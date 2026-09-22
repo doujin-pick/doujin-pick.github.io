@@ -1445,3 +1445,36 @@ a.card-media {
     columns: 1;
   }
 }
+
+
+/* Work page SEO sections */
+.work-lead {
+  margin: 0.75rem 0 1.25rem;
+  line-height: 1.7;
+  color: var(--muted, #555);
+  font-size: 0.95rem;
+}
+.work-sections {
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 1.75rem;
+}
+.work-section h2 {
+  font-size: 1.1rem;
+  margin: 0 0 0.75rem;
+}
+.related-title-list {
+  list-style: disc;
+  margin: 0 0 1.25rem 1.25rem;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+.related-title-list a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.seo-home-works {
+  padding: 1rem 0 2rem;
+}

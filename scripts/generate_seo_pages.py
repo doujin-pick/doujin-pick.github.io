@@ -52,19 +52,19 @@ MAIN_PAGES = [
 
 PAGE_META = {
     "index.html": {
-        "title": "同人ピック｜セール・ランキング・目的別で見つかる同人ガイド",
-        "description": "DLsiteの同人作品を、人気・セール・ジャンルから探しやすくまとめたサイトです（18歳以上向け）。",
+        "title": "同人ピック｜DLsite同人の人気・セールまとめ",
+        "description": "同人ピックは、DLsiteの同人作品を人気・セール・ジャンルから探しやすくまとめたガイドです（18歳以上向け）。",
     },
     "explore.html": {
         "title": "すべて探す｜同人ピック",
         "description": "タイトル・サークル・タグで同人を検索。形式・セール・価格帯・並び順で絞り込めます（18歳以上）。",
     },
     "ranking.html": {
-        "title": "人気｜同人ピック",
+        "title": "人気ランキング｜同人ピック",
         "description": "人気の同人作品一覧です。形式やセールでも絞り込めます（18歳以上向け）。",
     },
     "sale.html": {
-        "title": "セール｜同人ピック",
+        "title": "セール一覧｜同人ピック",
         "description": "割引中の同人作品を、割引率や価格帯から探せます（18歳以上）。",
     },
     "genre.html": {
@@ -111,26 +111,17 @@ def meta_description(desc: str, fallback: str, lo: int = 80, hi: int = 120) -> s
     return cut.rstrip() + "…"
 
 
-def page_title(title: str, maker: str) -> str:
-    """{title}｜{maker}｜同人ピック — truncate sensibly (~60–70 visible chars)."""
+def page_title(title: str, maker: str = "") -> str:
+    """{title}｜紹介・タグ・価格｜同人ピック — title first; truncate carefully."""
     site = SITE_NAME
     t = clean_text(title) or "作品"
-    m = clean_text(maker)
-    # Budget for full title roughly under 70 chars
-    budget = 68
+    mid = "｜紹介・タグ・価格"
     suffix = f"｜{site}"
-    mid = f"｜{m}" if m else ""
-    remain = budget - len(suffix) - len(mid)
-    if remain < 12:
-        mid = ""
-        remain = budget - len(suffix)
-        if m:
-            # shorten maker
-            mk = m[:10] + ("…" if len(m) > 10 else "")
-            mid = f"｜{mk}"
-            remain = budget - len(suffix) - len(mid)
-    if len(t) > max(remain, 8):
-        t = t[: max(remain, 8) - 1] + "…"
+    # ~60–70 visible chars for SERP; keep work title as long as possible
+    budget = 70
+    remain = budget - len(mid) - len(suffix)
+    if len(t) > max(remain, 12):
+        t = t[: max(remain, 12) - 1] + "…"
     return f"{t}{mid}{suffix}"
 
 
@@ -403,6 +394,26 @@ def cover_html(work: dict, class_name: str = "work-hero-cover") -> str:
     )
 
 
+def work_meta_description(title: str, maker: str, desc: str) -> str:
+    """Meta description must start with the work title for title-query ranking."""
+    t = clean_text(title) or "作品"
+    m = clean_text(maker)
+    body = clean_text(desc)
+    head = f"{t}の紹介"
+    if m:
+        head += f"。サークルは{m}"
+    head += "。"
+    if body:
+        # Avoid duplicating title if description already starts with it
+        rest = body
+        if rest.startswith(t):
+            rest = rest[len(t):].lstrip(" 　—－|｜:：。．.")
+        combined = head + rest
+    else:
+        combined = head + f"{SITE_NAME}の作品ページです。"
+    return meta_description(combined, head, lo=60, hi=120)
+
+
 def generate_work_page(
     work: dict,
     all_works: list[dict],
@@ -414,10 +425,7 @@ def generate_work_page(
     title = work.get("title") or wid
     maker = work.get("maker") or ""
     full_title = page_title(title, maker)
-    desc = meta_description(
-        work.get("description") or "",
-        f"{title}（{maker}）の作品情報 — {SITE_NAME}",
-    )
+    desc = work_meta_description(title, maker, work.get("description") or "")
     canonical = abs_url(site_url, f"works/{wid}.html")
     image = work.get("image") or work.get("image_thumb") or ""
     cta = dlsite_cta(work)
@@ -432,6 +440,7 @@ def generate_work_page(
         "url": canonical,
         "image": image or None,
         "brand": {"@type": "Brand", "name": maker} if maker else None,
+        "author": {"@type": "Organization", "name": maker} if maker else None,
         "category": type_label(work),
         "offers": {
             "@type": "Offer",
@@ -442,7 +451,6 @@ def generate_work_page(
             "seller": {"@type": "Organization", "name": "DLsite"},
         },
     }
-    # prune Nones
     product_ld = {k: v for k, v in product_ld.items() if v is not None}
     if product_ld.get("offers"):
         product_ld["offers"] = {
@@ -456,6 +464,7 @@ def generate_work_page(
         "description": desc,
         "url": canonical,
         "image": image or None,
+        "author": {"@type": "Organization", "name": maker} if maker else None,
         "creator": {"@type": "Organization", "name": maker} if maker else None,
         "genre": (work.get("tags") or [])[:6] or None,
         "identifier": wid,
@@ -479,9 +488,11 @@ def generate_work_page(
         tag_bits.append(f'<a class="tag" href="{esc(href)}">{esc(t)}</a>')
     tag_links = " ".join(tag_bits) or '<span class="tag">タグなし</span>'
 
+    # Related: card grid + plain title text links (strong internal anchor signals)
     related_html = ""
     if related:
         cards = []
+        text_links = []
         for rw in related:
             rid = rw["id"]
             rtitle = rw.get("title") or rid
@@ -505,16 +516,41 @@ def generate_work_page(
           </div>
         </article>"""
             )
+            text_links.append(f'<li><a href="{esc(rid)}.html">{esc(rtitle)}</a></li>')
         related_html = f"""
     <section class="section work-related">
       <div class="container">
         <div class="section-head"><h2>関連作品</h2><a href="../explore.html">すべて探す →</a></div>
+        <ul class="related-title-list">
+          {chr(10).join("          " + x for x in text_links)}
+        </ul>
         <div class="grid">{chr(10).join(cards)}
         </div>
       </div>
     </section>"""
 
     sale_badge = '<span class="badge-sale">セール</span>' if work.get("on_sale") else ""
+    price_state = "セール中" if work.get("on_sale") else "通常価格"
+    raw_desc = (work.get("description") or "").strip()
+    lead_bits = [f"「{title}」の紹介ページです。"]
+    if maker:
+        lead_bits.append(f"サークルは{maker}。")
+    lead = "".join(lead_bits)
+    # Short natural follow-on from description (first sentence-ish), not spammy
+    if raw_desc:
+        snippet = clean_text(raw_desc)
+        if len(snippet) > 160:
+            cut = snippet[:160]
+            for sep in ("。", "！", "？", "、", " "):
+                i = cut.rfind(sep)
+                if i >= 60:
+                    cut = cut[: i + (1 if sep in "。！？" else 0)]
+                    break
+            snippet = cut.rstrip() + ("…" if len(clean_text(raw_desc)) > len(cut) else "")
+        lead_extra = snippet
+    else:
+        lead_extra = f"{type_label(work)}作品のタグ・価格情報をまとめています。"
+
     head = shell_head(
         title=full_title,
         description=desc,
@@ -550,26 +586,35 @@ def generate_work_page(
         <div class="work-main">
           <p class="work-maker">{esc(maker or "サークル未記載")}</p>
           <h1 class="work-title">{esc(title)}</h1>
-          <div class="work-price">{format_price_html(work)}</div>
-          <ul class="drawer-meta-list work-meta">
-            <li><span>形式</span>{esc(type_label(work))}</li>
-            <li><span>作品ID</span>{esc(wid)}</li>
-            <li><span>状態</span>{"セール中" if work.get("on_sale") else "通常価格"}</li>
-          </ul>
-          <div class="drawer-tags work-tags" aria-label="ジャンルタグ">{tag_links}</div>
+          <p class="work-lead">{esc(lead)}{esc(lead_extra)}</p>
           <div class="drawer-actions work-actions">
             <a class="btn-cta" href="{esc(cta)}" target="_blank" rel="noopener noreferrer">DLsiteで見る</a>
             <a class="btn" href="../explore.html">カタログへ戻る</a>
           </div>
         </div>
       </div>
-      <div class="container">
-        <div class="drawer-desc work-desc">
-          <h2 class="drawer-desc-title">作品紹介</h2>
-          <div class="drawer-desc-body">
+      <div class="container work-sections">
+        <section class="work-section" aria-labelledby="sec-price">
+          <h2 id="sec-price">価格・セール</h2>
+          <div class="work-price">{format_price_html(work)}</div>
+          <ul class="drawer-meta-list work-meta">
+            <li><span>形式</span>{esc(type_label(work))}</li>
+            <li><span>作品ID</span>{esc(wid)}</li>
+            <li><span>状態</span>{esc(price_state)}</li>
+          </ul>
+        </section>
+        <section class="work-section" aria-labelledby="sec-tags">
+          <h2 id="sec-tags">タグ</h2>
+          <div class="drawer-tags work-tags" aria-label="ジャンルタグ">{tag_links}</div>
+        </section>
+        <section class="work-section" aria-labelledby="sec-content">
+          <h2 id="sec-content" class="drawer-desc-title">作品の内容</h2>
+          <div class="drawer-desc work-desc">
+            <div class="drawer-desc-body">
 {description_html(work.get("description") or "")}
+            </div>
           </div>
-        </div>
+        </section>
       </div>
     </article>
 {related_html}
@@ -706,6 +751,27 @@ def generate_tag_page(
 </body>
 </html>
 """
+
+
+def write_llms_txt(site_url: str) -> None:
+    """Optional llms.txt for AI/crawler discoverability (skip-safe if unused)."""
+    text = f"""# 同人ピック
+> DLsiteの同人作品を、人気・セール・ジャンルから探しやすくまとめたガイド（18歳以上向け）
+
+サイト名: {SITE_NAME}
+URL: {site_url}/
+Sitemap: {site_url}/sitemap.xml
+
+## 主要ページ
+- [ホーム]({site_url}/index.html): おすすめ・人気・セールの入口
+- [探す]({site_url}/explore.html): タイトル・サークル・タグ検索
+- [人気]({site_url}/ranking.html): 人気ランキング
+- [セール]({site_url}/sale.html): 割引中の作品
+
+## 作品ページ
+各作品は {site_url}/works/{{id}}.html （紹介・タグ・価格）
+"""
+    (ROOT / "llms.txt").write_text(text, encoding="utf-8")
 
 
 def write_robots(site_url: str) -> None:
@@ -916,7 +982,125 @@ def patch_main_pages(site_url: str, top_tags: list[tuple[str, int]], updated_at:
                     1,
                 )
 
+        # Homepage brand SEO: H1「同人ピック」, intro, JSON-LD, crawlable work links
+        if fname == "index.html":
+            text = ensure_homepage_brand_seo(text, site_url, _INDEX_WORKS_CACHE)
+
         path.write_text(text, encoding="utf-8")
+
+
+def ensure_homepage_brand_seo(text: str, site_url: str, works: list[dict] | None = None) -> str:
+    """Visible brand H1/intro + WebSite/Organization JSON-LD + noscript title links."""
+    # H1 must contain exact 同人ピック
+    h1_block = (
+        "<h1>同人ピック — 気になる同人を、<br>かんたんに見つける。</h1>\n"
+        '          <p class="lede">同人ピックは、DLsiteの同人作品を人気・セール・ジャンルから'
+        "探しやすくまとめたガイドです。気になる作品を同人ピックで見つけて、購入はDLsiteで行えます。</p>"
+    )
+    text2, n = re.subn(
+        r"<h1>.*?</h1>\s*<p class=\"lede\">.*?</p>",
+        h1_block,
+        text,
+        count=1,
+        flags=re.S,
+    )
+    if n:
+        text = text2
+    else:
+        # Fallback: inject after home-intro-grid opening content div
+        text = re.sub(
+            r'(<div class="container home-intro-grid">\s*<div>)',
+            r"\1\n          " + h1_block,
+            text,
+            count=1,
+        )
+
+    website_ld = {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": SITE_NAME,
+        "url": abs_url(site_url, "index.html"),
+        "description": PAGE_META["index.html"]["description"],
+        "inLanguage": "ja",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": abs_url(site_url, "explore.html") + "?q={search_term_string}",
+            },
+            "query-input": "required name=search_term_string",
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": SITE_NAME,
+            "url": abs_url(site_url, "index.html"),
+        },
+    }
+    org_ld = {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": SITE_NAME,
+        "url": abs_url(site_url, "index.html"),
+    }
+    ld_scripts = (
+        '  <script type="application/ld+json">'
+        + json.dumps(website_ld, ensure_ascii=False, separators=(",", ":"))
+        + "</script>\n"
+        + '  <script type="application/ld+json">'
+        + json.dumps(org_ld, ensure_ascii=False, separators=(",", ":"))
+        + "</script>"
+    )
+    text = re.sub(
+        r'\n\s*<script type="application/ld\+json">.*?</script>',
+        "",
+        text,
+        flags=re.S,
+    )
+    if "</head>" in text:
+        text = text.replace("</head>", ld_scripts + "\n</head>", 1)
+
+    works = works or []
+    featured = [w for w in works if "featured" in (w.get("sections") or [])]
+    ranking = [w for w in works if "ranking" in (w.get("sections") or [])]
+    ordered = featured + ranking + works
+    seen: set[str] = set()
+    links: list[str] = []
+    for w in ordered:
+        wid = w.get("id")
+        if not wid or wid in seen:
+            continue
+        seen.add(wid)
+        t = w.get("title") or wid
+        links.append(f'<li><a href="works/{esc(wid)}.html">{esc(t)}</a></li>')
+        if len(links) >= 24:
+            break
+    if links:
+        block = (
+            "<!-- SEO_HOME_WORK_LINKS -->\n"
+            '<noscript class="seo-home-works"><div class="container">'
+            "<h2>掲載作品</h2><ul>"
+            + "".join(links)
+            + "</ul></div></noscript>\n"
+            "<!-- /SEO_HOME_WORK_LINKS -->"
+        )
+        if "<!-- SEO_HOME_WORK_LINKS -->" in text and "<!-- /SEO_HOME_WORK_LINKS -->" in text:
+            text = re.sub(
+                re.escape("<!-- SEO_HOME_WORK_LINKS -->")
+                + r".*?"
+                + re.escape("<!-- /SEO_HOME_WORK_LINKS -->"),
+                block,
+                text,
+                count=1,
+                flags=re.S,
+            )
+        else:
+            text = text.replace("</main>", f"    {block}\n  </main>", 1)
+
+    return text
+
+
+# Filled in main() before patch_main_pages
+_INDEX_WORKS_CACHE: list[dict] = []
 
 
 def sync_work_dir(works: list[dict]) -> None:
@@ -982,6 +1166,9 @@ def main() -> int:
     write_robots(site_url)
     url_count = write_sitemap(site_url, works, tag_slugs, updated_at)
     write_tag_cloud_js(top_tags)
+    write_llms_txt(site_url)
+    global _INDEX_WORKS_CACHE
+    _INDEX_WORKS_CACHE = works
     patch_main_pages(site_url, top_tags, updated_at)
 
     print(
