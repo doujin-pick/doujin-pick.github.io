@@ -1,0 +1,6 @@
+# 同人ピック robots.txt
+User-agent: *
+Allow: /
+
+# Absolute sitemap (set SITE_URL or js/config.js siteUrl before deploy)
+Sitemap: https://fbkikkun-crypto.github.io/doujin-pick/sitemap.xml
