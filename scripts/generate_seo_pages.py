@@ -54,18 +54,18 @@ MAIN_PAGES = [
 PAGE_META = {
     "index.html": {
         "title": "同人ピック｜セール・ランキング・目的別で見つかる同人ガイド",
-        "description": "同人ピックはDLsite公開情報をもとに同人作品を人手で棚分けする発見ガイドです。セール・人気寄り・形式から探せます（18歳以上）。",
+        "description": "DLsiteの同人作品を、人気・セール・ジャンルから探しやすくまとめたサイトです（18歳以上向け）。",
     },
     "explore.html": {
         "title": "すべて探す｜同人ピック",
         "description": "タイトル・サークル・タグで同人を検索。形式・セール・価格帯・並び順で絞り込めます（18歳以上）。",
     },
     "ranking.html": {
-        "title": "人気寄り｜同人ピック",
-        "description": "カタログ内の人気寄り同人作品一覧。形式やセール条件と組み合わせて探せます（18歳以上）。",
+        "title": "人気｜同人ピック",
+        "description": "人気の同人作品一覧です。形式やセールでも絞り込めます（18歳以上向け）。",
     },
     "sale.html": {
-        "title": "セール拾い｜同人ピック",
+        "title": "セール｜同人ピック",
         "description": "割引中の同人作品を割引率や価格帯で拾うページ（18歳以上）。",
     },
     "genre.html": {
@@ -338,7 +338,7 @@ def header_nav(depth: int = 0, active: str = "") -> str:
     <nav class="container nav" aria-label="メイン">
       {nav("home", "index.html", "ホーム")}
       {nav("explore", "explore.html", "探す")}
-      {nav("ranking", "ranking.html", "人気寄り")}
+      {nav("ranking", "ranking.html", "人気")}
       {nav("sale", "sale.html", "セール")}
       {nav("fav", "explore.html?view=fav", "お気に入り")}
       {nav("about", "about.html", "について")}

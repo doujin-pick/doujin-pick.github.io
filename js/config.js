@@ -14,7 +14,7 @@
  */
 window.DOJIN_PICK = {
   siteName: "同人ピック",
-  tagline: "セール・ランキング・目的別で見つかる同人ガイド",
+  tagline: "DLsiteの同人を、探しやすくまとめる",
   affiliateId: "", // 例: "your_aff_id"
   // 作品ごとの dlaf.jp URL（リンク作成で発行したものだけ貼る）
   affiliateUrls: {},

@@ -477,9 +477,9 @@
       if (heading) {
         if (state.view === "fav") heading.textContent = "お気に入り";
         else if (state.tag) heading.textContent = "タグ: " + state.tag;
-        else if (state.sale && !state.type && !state.q) heading.textContent = "セール拾い";
+        else if (state.sale && !state.type && !state.q) heading.textContent = "セール中の作品";
         else if (state.sort === "popular" && !state.sale && !state.type && !state.q && !state.price)
-          heading.textContent = document.body.dataset.preset === "ranking" ? "いま人気寄り" : "すべて探す";
+          heading.textContent = document.body.dataset.preset === "ranking" ? "人気の作品" : "すべて探す";
         else heading.textContent = "探す";
       }
       renderTagCloud();
