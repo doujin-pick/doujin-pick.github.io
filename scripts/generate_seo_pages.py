@@ -73,7 +73,7 @@ PAGE_META = {
         "description": "マンガ/CG・ゲーム・ボイス・ASMRなど形式から同人を探す（18歳以上）。",
     },
     "about.html": {
-        "title": "について｜同人ピック",
+        "title": "同人ピック",
         "description": "同人ピックの案内。非公式キュレーション、18歳以上向け、購入はDLsite側です。",
     },
 }
@@ -341,8 +341,7 @@ def header_nav(depth: int = 0, active: str = "") -> str:
       {nav("ranking", "ranking.html", "人気")}
       {nav("sale", "sale.html", "セール")}
       {nav("fav", "explore.html?view=fav", "お気に入り")}
-      {nav("about", "about.html", "について")}
-    </nav>
+          </nav>
   </div>"""
 
 
@@ -360,7 +359,7 @@ def footer_html(depth: int, tag_links_html: str, updated_at: str = "") -> str:
         <p><strong>18歳未満の方の閲覧・購入はできません。</strong></p>
         <p>DLsite および関連ロゴは各社の商標です。本サイトは非公式のキュレーションであり、エイシスとは無関係です。</p>
         <p>© {esc(SITE_NAME)}</p>
-        <p class="footer-nav-static"><a href="{p}index.html">ホーム</a> · <a href="{p}explore.html">探す</a> · <a href="{p}about.html">について</a></p>
+        <p class="footer-nav-static"><a href="{p}index.html">ホーム</a> · <a href="{p}explore.html">探す</a></p>
       </div>
     </div>
   </footer>"""
@@ -389,7 +388,6 @@ def scripts_block(depth: int = 0) -> str:
   <script src="{p}js/data.js"></script>
   <script src="{p}js/filters.js"></script>
   <script src="{p}js/search.js"></script>
-  <script src="{p}js/promo.js"></script>
   <script src="{p}js/app.js"></script>"""
 
 
