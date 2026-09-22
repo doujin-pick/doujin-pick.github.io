@@ -22,7 +22,7 @@ JST = timezone(timedelta(hours=9))
 UA = "Mozilla/5.0 (compatible; DojinPickBot/1.0; +local; curation updater)"
 
 # Cap unique works enriched with detail pages (runtime / politeness)
-ENRICH_LIMIT = 300
+ENRICH_LIMIT = 800
 ENRICH_CAP = ENRICH_LIMIT  # alias
 RANKING_PARSE_LIMIT = 100  # IDs per ranking/list page
 SLEEP_MIN, SLEEP_MAX = 0.3, 0.6
@@ -33,28 +33,52 @@ MAX_TAGS = 6
 # Popularity-first: week/month/year/total + category hits, then day/sale/new.
 # Verified public maniax/home ranking URLs (2026-09). Order = ingest priority.
 SOURCES = [
-    # Famous / sustained popularity
-    ("https://www.dlsite.com/maniax/ranking/week", "ranking_week", ["featured", "ranking"], "ranking_week.html"),
-    ("https://www.dlsite.com/maniax/ranking/month", "ranking_month", ["featured", "ranking"], "ranking_month.html"),
-    ("https://www.dlsite.com/maniax/ranking/year", "ranking_year", ["featured", "ranking"], "ranking_year.html"),
+    # === Historic famous / all-time hits (priority) ===
     ("https://www.dlsite.com/maniax/ranking/total", "ranking_total", ["featured", "ranking"], "ranking_total.html"),
-    # Category best-sellers (week/month)
-    ("https://www.dlsite.com/maniax/ranking/week/=/category/game", "ranking_game_week", ["genre_game"], "ranking_game_week.html"),
-    ("https://www.dlsite.com/maniax/ranking/month/=/category/game", "ranking_game_month", ["genre_game"], "ranking_game_month.html"),
-    ("https://www.dlsite.com/maniax/ranking/week/=/category/voice", "ranking_voice_week", ["genre_asmr"], "ranking_voice_week.html"),
-    ("https://www.dlsite.com/maniax/ranking/month/=/category/voice", "ranking_voice_month", ["genre_asmr"], "ranking_voice_month.html"),
-    ("https://www.dlsite.com/maniax/ranking/week/=/category/comic", "ranking_comic_week", ["genre_manga"], "ranking_comic_week.html"),
-    ("https://www.dlsite.com/maniax/ranking/month/=/category/comic", "ranking_comic_month", ["genre_manga"], "ranking_comic_month.html"),
-    # Recent hot (day) + category day
+    ("https://www.dlsite.com/maniax/ranking/year", "ranking_year", ["featured", "ranking"], "ranking_year.html"),
+    ("https://www.dlsite.com/maniax/ranking/total/=/category/voice", "ranking_voice_total", ["featured", "genre_asmr"], "ranking_voice_total.html"),
+    ("https://www.dlsite.com/maniax/ranking/year/=/category/voice", "ranking_voice_year", ["featured", "genre_asmr"], "ranking_voice_year.html"),
+    ("https://www.dlsite.com/maniax/ranking/total/=/category/game", "ranking_game_total", ["featured", "genre_game"], "ranking_game_total.html"),
+    ("https://www.dlsite.com/maniax/ranking/year/=/category/game", "ranking_game_year", ["featured", "genre_game"], "ranking_game_year.html"),
+    ("https://www.dlsite.com/maniax/ranking/total/=/category/comic", "ranking_comic_total", ["genre_manga"], "ranking_comic_total.html"),
+    ("https://www.dlsite.com/maniax/ranking/year/=/category/comic", "ranking_comic_year", ["genre_manga"], "ranking_comic_year.html"),
+    ("https://www.dlsite.com/maniax/ranking/total/=/category/illust", "ranking_illust_total", ["genre_manga"], "ranking_illust_total.html"),
+    ("https://www.dlsite.com/maniax/ranking/year/=/category/illust", "ranking_illust_year", ["genre_manga"], "ranking_illust_year.html"),
+    # Bestsellers by download (all + category / work_type)
+    ("https://www.dlsite.com/maniax/fsr/=/order/dl_d/per_page/100", "bestsellers_dl", ["featured", "ranking"], "bestsellers_dl.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/audio/order/dl_d/per_page/100", "bestsellers_voice", ["featured", "genre_asmr"], "bestsellers_voice.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/game/order/dl_d/per_page/100", "bestsellers_game", ["featured", "genre_game"], "bestsellers_game.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/comic/order/dl_d/per_page/100", "bestsellers_comic", ["genre_manga"], "bestsellers_comic.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/SOU/order/dl_d/per_page/100", "bestsellers_sou", ["featured", "genre_asmr"], "bestsellers_sou.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/RPG/order/dl_d/per_page/50", "bestsellers_rpg", ["genre_game"], "bestsellers_rpg.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/ADV/order/dl_d/per_page/50", "bestsellers_adv", ["genre_game"], "bestsellers_adv.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/SIM/order/dl_d/per_page/50", "bestsellers_sim", ["genre_game"], "bestsellers_sim.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/ICG/order/dl_d/per_page/50", "bestsellers_icg", ["genre_manga"], "bestsellers_icg.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/MNG/order/dl_d/per_page/50", "bestsellers_mng", ["genre_manga"], "bestsellers_mng.html"),
+    # All-ages / home floor all-time + year (iconic crossover hits)
+    ("https://www.dlsite.com/home/ranking/total", "home_ranking_total", ["featured", "ranking"], "home_ranking_total.html"),
+    ("https://www.dlsite.com/home/ranking/year", "home_ranking_year", ["featured", "ranking"], "home_ranking_year.html"),
+    # === Recent attention + ranking tops ===
+    ("https://www.dlsite.com/maniax/ranking/month", "ranking_month", ["featured", "ranking"], "ranking_month.html"),
+    ("https://www.dlsite.com/maniax/ranking/week", "ranking_week", ["featured", "ranking"], "ranking_week.html"),
     ("https://www.dlsite.com/maniax/ranking/day", "ranking_day", ["featured", "ranking"], "ranking_day.html"),
-    ("https://www.dlsite.com/maniax/ranking/day/=/category/game", "ranking_game_day", ["genre_game"], "ranking_game_day.html"),
+    ("https://www.dlsite.com/maniax/ranking/month/=/category/voice", "ranking_voice_month", ["featured", "genre_asmr"], "ranking_voice_month.html"),
+    ("https://www.dlsite.com/maniax/ranking/week/=/category/voice", "ranking_voice_week", ["genre_asmr"], "ranking_voice_week.html"),
     ("https://www.dlsite.com/maniax/ranking/day/=/category/voice", "ranking_voice_day", ["featured", "genre_asmr"], "ranking_voice_day.html"),
+    ("https://www.dlsite.com/maniax/ranking/month/=/category/game", "ranking_game_month", ["genre_game"], "ranking_game_month.html"),
+    ("https://www.dlsite.com/maniax/ranking/week/=/category/game", "ranking_game_week", ["genre_game"], "ranking_game_week.html"),
+    ("https://www.dlsite.com/maniax/ranking/day/=/category/game", "ranking_game_day", ["genre_game"], "ranking_game_day.html"),
+    ("https://www.dlsite.com/maniax/ranking/month/=/category/comic", "ranking_comic_month", ["genre_manga"], "ranking_comic_month.html"),
+    ("https://www.dlsite.com/maniax/ranking/week/=/category/comic", "ranking_comic_week", ["genre_manga"], "ranking_comic_week.html"),
     ("https://www.dlsite.com/maniax/ranking/day/=/category/comic", "ranking_comic_day", ["genre_manga"], "ranking_comic_day.html"),
-    # Sale hits + new releases + all-ages home floor ranking
-    ("https://www.dlsite.com/maniax/fsr/=/discount/1/order/dl_d", "sale_discount", ["sale"], "sale_discount.html"),
-    ("https://www.dlsite.com/maniax/fsr/=/order/dl_d", "bestsellers_dl", ["featured", "ranking"], "bestsellers_dl.html"),
-    ("https://www.dlsite.com/maniax/fsr/=/order/trend", "trend", ["featured"], "trend.html"),
+    # New + trending + sale
+    ("https://www.dlsite.com/maniax/fsr/=/order/trend/per_page/100", "trend", ["featured"], "trend.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/SOU/order/trend/per_page/50", "trend_voice", ["featured", "genre_asmr"], "trend_voice.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/game/order/trend/per_page/50", "trend_game", ["genre_game"], "trend_game.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/discount/1/order/dl_d/per_page/100", "sale_discount", ["sale"], "sale_discount.html"),
     ("https://www.dlsite.com/maniax/new", "maniax_new", ["featured"], "maniax_new.html"),
+    ("https://www.dlsite.com/home/ranking/month", "home_ranking_month", ["featured"], "home_ranking_month.html"),
+    ("https://www.dlsite.com/home/ranking/week", "home_ranking_week", ["featured"], "home_ranking_week.html"),
     ("https://www.dlsite.com/home/ranking/day", "home_ranking_day", ["featured"], "home_ranking_day.html"),
 ]
 
@@ -575,7 +599,7 @@ def take_balanced(items: list[dict], cap: int = ENRICH_LIMIT) -> list[dict]:
     for w in items:
         buckets.get(w.get("category") or "other", buckets["other"]).append(w)
     # Soft floors so UI genre pages aren't empty; then fill by popularity order
-    floor_n = max(12, min(40, cap // 5))
+    floor_n = max(20, min(80, cap // 6))
     plan = [("game", floor_n), ("asmr", floor_n), ("manga_cg", floor_n)]
     out: list[dict] = []
     seen: set[str] = set()
@@ -610,15 +634,15 @@ def main() -> int:
     errors: list[str] = []
 
     def apply_source_category(w: dict, label: str) -> None:
-        if "voice" in label:
+        if any(k in label for k in ("voice", "sou", "audio", "asmr")):
             w["category"] = "asmr"
             if "genre_asmr" not in w["sections"]:
                 w["sections"].append("genre_asmr")
-        elif "comic" in label:
+        elif any(k in label for k in ("comic", "illust", "icg", "mng", "manga")):
             w["category"] = "manga_cg"
             if "genre_manga" not in w["sections"]:
                 w["sections"].append("genre_manga")
-        elif "game" in label:
+        elif any(k in label for k in ("game", "rpg", "adv", "sim")):
             w["category"] = "game"
             if "genre_game" not in w["sections"]:
                 w["sections"].append("genre_game")
