@@ -22,7 +22,7 @@ JST = timezone(timedelta(hours=9))
 UA = "Mozilla/5.0 (compatible; DojinPickBot/1.0; +local; curation updater)"
 
 # Cap unique works enriched with detail pages (runtime / politeness)
-ENRICH_LIMIT = 180
+ENRICH_LIMIT = 300
 ENRICH_CAP = ENRICH_LIMIT  # alias
 RANKING_PARSE_LIMIT = 100  # IDs per ranking/list page
 SLEEP_MIN, SLEEP_MAX = 0.3, 0.6
