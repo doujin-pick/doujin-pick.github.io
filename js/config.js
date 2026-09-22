@@ -21,7 +21,7 @@ window.DOJIN_PICK = {
   affiliateBase: "", // 未使用（自作パラメータ禁止）。必要なら公式手順に従って設定
   // 公開URL（末尾スラッシュなし）。sitemap/canonical/OGP用。未設定時 SEO 生成は https://doujin-pick.example
   // または環境変数 SITE_URL でも可。
-  siteUrl: "https://fbkikkun-crypto.github.io/doujin-pick",
+  siteUrl: "https://doujin-pick.github.io",
   /**
    * URL 解決
    * - work.affiliate_url または affiliateUrls[id] があればそれを返す（dlaf.jp）
