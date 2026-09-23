@@ -29,6 +29,7 @@ from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data" / "works.json"
+WORK_CACHE = ROOT / "data" / "cache" / "works"
 CONFIG_JS = ROOT / "js" / "config.js"
 WORKS_DIR = ROOT / "works"
 TAGS_DIR = ROOT / "tags"
@@ -91,6 +92,44 @@ def resolve_site_url() -> str:
 
 def esc(s: object) -> str:
     return html.escape(str(s if s is not None else ""), quote=True)
+
+
+
+def hydrate_descriptions_from_cache(works: list[dict]) -> int:
+    """Restore full blurbs from work HTML cache so SEO pages stay rich after catalog truncation."""
+    try:
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location(
+            "dojin_update_works", ROOT / "scripts" / "update_works.py"
+        )
+        if spec is None or spec.loader is None:
+            return 0
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        extract = getattr(mod, "extract_description", None)
+        if not callable(extract):
+            return 0
+    except Exception:
+        return 0
+    n = 0
+    for w in works:
+        wid = w.get("id") or ""
+        if not wid or str(wid).startswith("SAMPLE"):
+            continue
+        cache_path = WORK_CACHE / f"{wid}.html"
+        if not cache_path.exists():
+            continue
+        try:
+            html_text = cache_path.read_text(encoding="utf-8", errors="replace")
+            full = (extract(html_text) or "").strip()
+            cur = (w.get("description") or "").strip()
+            if len(full) > len(cur):
+                w["description"] = full
+                n += 1
+        except Exception:
+            continue
+    return n
 
 
 def clean_text(s: str) -> str:
@@ -402,7 +441,6 @@ def popular_tags_block(top_tags: list[tuple[str, int]], depth: int, heading: str
 def scripts_block(depth: int = 0) -> str:
     p = "../" * depth
     return f"""  <script src="{p}js/config.js"></script>
-  <script src="{p}js/embedded-works.js"></script>
   <script src="{p}js/data.js"></script>
   <script src="{p}js/filters.js"></script>
   <script src="{p}js/search.js"></script>
@@ -1424,6 +1462,9 @@ def main() -> int:
         return 1
     payload = json.loads(DATA.read_text(encoding="utf-8"))
     works = payload.get("works") or []
+    hydrated = hydrate_descriptions_from_cache(works)
+    if hydrated:
+        print(f"[seo] hydrated {hydrated} descriptions from work cache")
     updated_at = payload.get("updated_at") or ""
     site_url = resolve_site_url()
 

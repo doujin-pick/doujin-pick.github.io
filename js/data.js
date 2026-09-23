@@ -1,6 +1,7 @@
 /**
  * 同人ピック — カタログローダ
- * works.json を fetch。file:// では失敗するため埋め込みフォールバックも持つ。
+ * Pages: fetch data/works.json only（埋め込みカタログは配信しない）。
+ * file:// 時のみ embed stub にフォールバック（通常は空）。
  */
 window.DOJIN_DATA = {
   works: [],
