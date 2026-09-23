@@ -22,7 +22,7 @@ JST = timezone(timedelta(hours=9))
 UA = "Mozilla/5.0 (compatible; DojinPickBot/1.0; +local; curation updater)"
 
 # Cap unique works enriched with detail pages (runtime / politeness)
-ENRICH_LIMIT = 4500
+ENRICH_LIMIT = 5000
 ENRICH_CAP = ENRICH_LIMIT  # alias
 RANKING_PARSE_LIMIT = 100  # IDs per ranking/list page
 SLEEP_MIN, SLEEP_MAX = 0.3, 0.6
@@ -109,7 +109,7 @@ SOURCES = [
     ("https://www.dlsite.com/maniax/fsr/=/order/price_d/per_page/100", "price_desc", ["featured"], "price_desc.html"),
     ("https://www.dlsite.com/maniax/fsr/=/work_type_category/audio/order/price_d/per_page/50", "price_voice", ["genre_asmr"], "price_voice.html"),
 
-    # === Expansion toward ENRICH_LIMIT=4500 (page 3–5 + more splits) ===
+    # === Expansion toward ENRICH_LIMIT=5000 (page 3–5 + more splits) ===
     ("https://www.dlsite.com/maniax/fsr/=/order/dl_d/per_page/100/page/3", "bestsellers_dl_p3", ["featured", "ranking"], "bestsellers_dl_p3.html"),
     ("https://www.dlsite.com/maniax/fsr/=/work_type_category/audio/order/dl_d/per_page/100/page/3", "bestsellers_voice_p3", ["featured", "genre_asmr"], "bestsellers_voice_p3.html"),
     ("https://www.dlsite.com/maniax/fsr/=/work_type_category/game/order/dl_d/per_page/100/page/3", "bestsellers_game_p3", ["featured", "genre_game"], "bestsellers_game_p3.html"),
@@ -140,7 +140,7 @@ SOURCES = [
     ("https://www.dlsite.com/maniax/fsr/=/work_type/MNG/order/price_d/per_page/100", "price_mng100", ["genre_manga"], "price_mng100.html"),
     ("https://www.dlsite.com/maniax/fsr/=/work_type/ICG/order/price_d/per_page/100", "price_icg100", ["genre_manga"], "price_icg100.html"),
     ("https://www.dlsite.com/maniax/ranking/day/=/category/illust", "ranking_illust_day", ["genre_manga"], "ranking_illust_day.html"),
-    # === Expansion toward ENRICH_LIMIT=4500 (page 4–5 + niche types) ===
+    # === Expansion toward ENRICH_LIMIT=5000 (page 4–5 + niche types) ===
     ("https://www.dlsite.com/maniax/fsr/=/order/dl_d/per_page/100/page/4", "bestsellers_dl_p4", ["featured", "ranking"], "bestsellers_dl_p4.html"),
     ("https://www.dlsite.com/maniax/fsr/=/order/dl_d/per_page/100/page/5", "bestsellers_dl_p5", ["featured", "ranking"], "bestsellers_dl_p5.html"),
     ("https://www.dlsite.com/maniax/fsr/=/work_type_category/audio/order/dl_d/per_page/100/page/4", "bestsellers_voice_p4", ["featured", "genre_asmr"], "bestsellers_voice_p4.html"),
@@ -185,7 +185,7 @@ SOURCES = [
     ("https://www.dlsite.com/maniax/fsr/=/work_type_category/audio/order/price_a/per_page/100", "price_asc_voice", ["genre_asmr"], "price_asc_voice.html"),
     ("https://www.dlsite.com/maniax/fsr/=/work_type_category/game/order/price_a/per_page/100", "price_asc_game", ["genre_game"], "price_asc_game.html"),
 
-    # === Expansion toward ENRICH_LIMIT=4500 (page 6–8 + more niches) ===
+    # === Expansion toward ENRICH_LIMIT=5000 (page 6–8 + more niches) ===
     ("https://www.dlsite.com/maniax/fsr/=/order/dl_d/per_page/100/page/6", "bestsellers_dl_p6", ["featured", "ranking"], "bestsellers_dl_p6.html"),
     ("https://www.dlsite.com/maniax/fsr/=/order/dl_d/per_page/100/page/7", "bestsellers_dl_p7", ["featured", "ranking"], "bestsellers_dl_p7.html"),
     ("https://www.dlsite.com/maniax/fsr/=/order/dl_d/per_page/100/page/8", "bestsellers_dl_p8", ["featured", "ranking"], "bestsellers_dl_p8.html"),
@@ -262,7 +262,7 @@ SOURCES = [
     ("https://www.dlsite.com/bl/ranking/total", "bl_ranking_total", ["featured"], "bl_ranking_total.html"),
     ("https://www.dlsite.com/bl/ranking/year", "bl_ranking_year", ["featured"], "bl_ranking_year.html"),
 
-    # === Expansion toward ENRICH_LIMIT=4500 (page 11–15 + deeper niches) ===
+    # === Expansion toward ENRICH_LIMIT=5000 (page 11–15 + deeper niches) ===
     ("https://www.dlsite.com/maniax/fsr/=/order/dl_d/per_page/100/page/11", "bestsellers_dl_p11", ["featured", "ranking"], "bestsellers_dl_p11.html"),
     ("https://www.dlsite.com/maniax/fsr/=/order/dl_d/per_page/100/page/12", "bestsellers_dl_p12", ["featured", "ranking"], "bestsellers_dl_p12.html"),
     ("https://www.dlsite.com/maniax/fsr/=/order/dl_d/per_page/100/page/13", "bestsellers_dl_p13", ["featured", "ranking"], "bestsellers_dl_p13.html"),
@@ -333,7 +333,7 @@ SOURCES = [
     ("https://www.dlsite.com/maniax/fsr/=/work_type/ICG/order/review_d/per_page/100", "review_icg", ["genre_manga"], "review_icg.html"),
     ("https://www.dlsite.com/maniax/fsr/=/work_type/MNG/order/review_d/per_page/100", "review_mng", ["genre_manga"], "review_mng.html"),
 
-    # === Expansion toward ENRICH_LIMIT=4500 (page 16–20 + deeper ASMR/game/manga) ===
+    # === Expansion toward ENRICH_LIMIT=5000 (page 16–20 + deeper ASMR/game/manga) ===
     ("https://www.dlsite.com/maniax/fsr/=/order/dl_d/per_page/100/page/16", "bestsellers_dl_p16", ["featured", "ranking"], "bestsellers_dl_p16.html"),
     ("https://www.dlsite.com/maniax/fsr/=/order/dl_d/per_page/100/page/17", "bestsellers_dl_p17", ["featured", "ranking"], "bestsellers_dl_p17.html"),
     ("https://www.dlsite.com/maniax/fsr/=/order/dl_d/per_page/100/page/18", "bestsellers_dl_p18", ["featured", "ranking"], "bestsellers_dl_p18.html"),
@@ -402,7 +402,7 @@ SOURCES = [
     ("https://www.dlsite.com/bl/ranking/week", "bl_ranking_week", ["featured"], "bl_ranking_week.html"),
     ("https://www.dlsite.com/books/fsr/=/order/dl_d/per_page/100", "books_bestsellers_dl", ["genre_manga"], "books_bestsellers_dl.html"),
     ("https://www.dlsite.com/pro/fsr/=/order/dl_d/per_page/100", "pro_bestsellers_dl", ["featured", "genre_game"], "pro_bestsellers_dl.html"),
-    # === Expansion toward ENRICH_LIMIT=4500 (page 21–25 + deeper ASMR/game/manga) ===
+    # === Expansion toward ENRICH_LIMIT=5000 (page 21–25 + deeper ASMR/game/manga) ===
     ("https://www.dlsite.com/maniax/fsr/=/order/dl_d/per_page/100/page/21", "bestsellers_dl_p21", ["featured", "ranking"], "bestsellers_dl_p21.html"),
     ("https://www.dlsite.com/maniax/fsr/=/order/dl_d/per_page/100/page/22", "bestsellers_dl_p22", ["featured", "ranking"], "bestsellers_dl_p22.html"),
     ("https://www.dlsite.com/maniax/fsr/=/order/dl_d/per_page/100/page/23", "bestsellers_dl_p23", ["featured", "ranking"], "bestsellers_dl_p23.html"),
@@ -475,6 +475,82 @@ SOURCES = [
     ("https://www.dlsite.com/maniax/fsr/=/work_type/TOOL/order/dl_d/per_page/100/page/3", "bestsellers_tool_p3", ["genre_game"], "bestsellers_tool_p3.html"),
     ("https://www.dlsite.com/maniax/fsr/=/work_type/SOU/order/trend/per_page/100/page/8", "trend_voice_p8", ["featured", "genre_asmr"], "trend_voice_p8.html"),
     ("https://www.dlsite.com/maniax/fsr/=/work_type_category/game/order/trend/per_page/100/page/8", "trend_game_p8", ["genre_game"], "trend_game_p8.html"),
+
+    # === Expansion toward ENRICH_LIMIT=5000 (page 26–30 + deeper ASMR/game/manga) ===
+    ("https://www.dlsite.com/maniax/fsr/=/order/dl_d/per_page/100/page/26", "bestsellers_dl_p26", ["featured", "ranking"], "bestsellers_dl_p26.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/order/dl_d/per_page/100/page/27", "bestsellers_dl_p27", ["featured", "ranking"], "bestsellers_dl_p27.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/order/dl_d/per_page/100/page/28", "bestsellers_dl_p28", ["featured", "ranking"], "bestsellers_dl_p28.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/order/dl_d/per_page/100/page/29", "bestsellers_dl_p29", ["featured", "ranking"], "bestsellers_dl_p29.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/order/dl_d/per_page/100/page/30", "bestsellers_dl_p30", ["featured", "ranking"], "bestsellers_dl_p30.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/audio/order/dl_d/per_page/100/page/22", "bestsellers_voice_p22", ["featured", "genre_asmr"], "bestsellers_voice_p22.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/audio/order/dl_d/per_page/100/page/23", "bestsellers_voice_p23", ["featured", "genre_asmr"], "bestsellers_voice_p23.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/audio/order/dl_d/per_page/100/page/24", "bestsellers_voice_p24", ["featured", "genre_asmr"], "bestsellers_voice_p24.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/audio/order/dl_d/per_page/100/page/25", "bestsellers_voice_p25", ["featured", "genre_asmr"], "bestsellers_voice_p25.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/game/order/dl_d/per_page/100/page/22", "bestsellers_game_p22", ["featured", "genre_game"], "bestsellers_game_p22.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/game/order/dl_d/per_page/100/page/23", "bestsellers_game_p23", ["featured", "genre_game"], "bestsellers_game_p23.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/game/order/dl_d/per_page/100/page/24", "bestsellers_game_p24", ["featured", "genre_game"], "bestsellers_game_p24.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/game/order/dl_d/per_page/100/page/25", "bestsellers_game_p25", ["featured", "genre_game"], "bestsellers_game_p25.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/SOU/order/dl_d/per_page/100/page/21", "bestsellers_sou_p21", ["featured", "genre_asmr"], "bestsellers_sou_p21.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/SOU/order/dl_d/per_page/100/page/22", "bestsellers_sou_p22", ["featured", "genre_asmr"], "bestsellers_sou_p22.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/SOU/order/dl_d/per_page/100/page/23", "bestsellers_sou_p23", ["featured", "genre_asmr"], "bestsellers_sou_p23.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/SOU/order/dl_d/per_page/100/page/24", "bestsellers_sou_p24", ["featured", "genre_asmr"], "bestsellers_sou_p24.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/comic/order/dl_d/per_page/100/page/15", "bestsellers_comic_p15", ["genre_manga"], "bestsellers_comic_p15.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/comic/order/dl_d/per_page/100/page/16", "bestsellers_comic_p16", ["genre_manga"], "bestsellers_comic_p16.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/RPG/order/dl_d/per_page/100/page/12", "bestsellers_rpg_p12", ["genre_game"], "bestsellers_rpg_p12.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/RPG/order/dl_d/per_page/100/page/13", "bestsellers_rpg_p13", ["genre_game"], "bestsellers_rpg_p13.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/ADV/order/dl_d/per_page/100/page/12", "bestsellers_adv_p12", ["genre_game"], "bestsellers_adv_p12.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/ADV/order/dl_d/per_page/100/page/13", "bestsellers_adv_p13", ["genre_game"], "bestsellers_adv_p13.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/SIM/order/dl_d/per_page/100/page/11", "bestsellers_sim_p11", ["genre_game"], "bestsellers_sim_p11.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/SIM/order/dl_d/per_page/100/page/12", "bestsellers_sim_p12", ["genre_game"], "bestsellers_sim_p12.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/ICG/order/dl_d/per_page/100/page/9", "bestsellers_icg_p9", ["genre_manga"], "bestsellers_icg_p9.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/MNG/order/dl_d/per_page/100/page/9", "bestsellers_mng_p9", ["genre_manga"], "bestsellers_mng_p9.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/ACT/order/dl_d/per_page/100/page/6", "bestsellers_act_p6", ["genre_game"], "bestsellers_act_p6.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/SLN/order/dl_d/per_page/100/page/6", "bestsellers_sln_p6", ["genre_game"], "bestsellers_sln_p6.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/MOV/order/dl_d/per_page/100/page/8", "bestsellers_mov_p8", ["featured"], "bestsellers_mov_p8.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/MUS/order/dl_d/per_page/100/page/6", "bestsellers_mus_p6", ["featured", "genre_asmr"], "bestsellers_mus_p6.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/VOICE/order/dl_d/per_page/100/page/6", "bestsellers_voice_type_p6", ["featured", "genre_asmr"], "bestsellers_voice_type_p6.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/order/release_d/per_page/100/page/13", "release_new_p13", ["featured"], "release_new_p13.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/order/release_d/per_page/100/page/14", "release_new_p14", ["featured"], "release_new_p14.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/audio/order/release_d/per_page/100/page/12", "release_voice_p12", ["featured", "genre_asmr"], "release_voice_p12.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/audio/order/release_d/per_page/100/page/13", "release_voice_p13", ["featured", "genre_asmr"], "release_voice_p13.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/game/order/release_d/per_page/100/page/12", "release_game_p12", ["genre_game"], "release_game_p12.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/game/order/release_d/per_page/100/page/13", "release_game_p13", ["genre_game"], "release_game_p13.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/comic/order/release_d/per_page/100/page/8", "release_comic_p8", ["genre_manga"], "release_comic_p8.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/order/trend/per_page/100/page/13", "trend_p13", ["featured"], "trend_p13.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/order/trend/per_page/100/page/14", "trend_p14", ["featured"], "trend_p14.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/SOU/order/trend/per_page/100/page/9", "trend_voice_p9", ["featured", "genre_asmr"], "trend_voice_p9.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/game/order/trend/per_page/100/page/9", "trend_game_p9", ["genre_game"], "trend_game_p9.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/discount/1/order/dl_d/per_page/100/page/13", "sale_discount_p13", ["sale"], "sale_discount_p13.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/discount/1/order/dl_d/per_page/100/page/14", "sale_discount_p14", ["sale"], "sale_discount_p14.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/discount/1/work_type_category/audio/order/dl_d/per_page/100/page/7", "sale_voice_p7", ["sale", "genre_asmr"], "sale_voice_p7.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/discount/1/work_type_category/game/order/dl_d/per_page/100/page/7", "sale_game_p7", ["sale", "genre_game"], "sale_game_p7.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/SOU/order/review_d/per_page/100/page/9", "review_sou_p9", ["featured", "genre_asmr"], "review_sou_p9.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/SOU/order/review_d/per_page/100/page/10", "review_sou_p10", ["featured", "genre_asmr"], "review_sou_p10.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/game/order/review_d/per_page/100/page/6", "review_game_p6", ["genre_game"], "review_game_p6.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/comic/order/review_d/per_page/100/page/5", "review_comic_p5", ["genre_manga"], "review_comic_p5.html"),
+    ("https://www.dlsite.com/home/fsr/=/order/dl_d/per_page/100/page/13", "home_bestsellers_dl_p13", ["featured", "ranking"], "home_bestsellers_dl_p13.html"),
+    ("https://www.dlsite.com/home/fsr/=/order/dl_d/per_page/100/page/14", "home_bestsellers_dl_p14", ["featured", "ranking"], "home_bestsellers_dl_p14.html"),
+    ("https://www.dlsite.com/home/fsr/=/order/trend/per_page/100/page/7", "home_trend_p7", ["featured"], "home_trend_p7.html"),
+    ("https://www.dlsite.com/home/fsr/=/order/release_d/per_page/100/page/7", "home_release_p7", ["featured"], "home_release_p7.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/SOU/order/price_d/per_page/100/page/7", "price_sou_p7", ["genre_asmr"], "price_sou_p7.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/game/order/price_d/per_page/100/page/7", "price_game_p7", ["genre_game"], "price_game_p7.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/RPG/order/review_d/per_page/100/page/4", "review_rpg_p4", ["genre_game"], "review_rpg_p4.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/ADV/order/review_d/per_page/100/page/4", "review_adv_p4", ["genre_game"], "review_adv_p4.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/ICG/order/review_d/per_page/100/page/4", "review_icg_p4", ["genre_manga"], "review_icg_p4.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/MNG/order/review_d/per_page/100/page/4", "review_mng_p4", ["genre_manga"], "review_mng_p4.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/SOU/order/price_a/per_page/100/page/4", "price_asc_sou_p4", ["genre_asmr"], "price_asc_sou_p4.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/audio/order/price_a/per_page/100/page/4", "price_asc_voice_p4", ["genre_asmr"], "price_asc_voice_p4.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/game/order/price_a/per_page/100/page/4", "price_asc_game_p4", ["genre_game"], "price_asc_game_p4.html"),
+    ("https://www.dlsite.com/books/fsr/=/order/dl_d/per_page/100/page/3", "books_bestsellers_dl_p3", ["genre_manga"], "books_bestsellers_dl_p3.html"),
+    ("https://www.dlsite.com/pro/fsr/=/order/dl_d/per_page/100/page/3", "pro_bestsellers_dl_p3", ["featured", "genre_game"], "pro_bestsellers_dl_p3.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/TBL/order/dl_d/per_page/100/page/4", "bestsellers_tbl_p4", ["genre_game"], "bestsellers_tbl_p4.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/TOOL/order/dl_d/per_page/100/page/4", "bestsellers_tool_p4", ["genre_game"], "bestsellers_tool_p4.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/SOU/order/trend/per_page/100/page/10", "trend_voice_p10", ["featured", "genre_asmr"], "trend_voice_p10.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type_category/game/order/trend/per_page/100/page/10", "trend_game_p10", ["genre_game"], "trend_game_p10.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/VOICE/order/dl_d/per_page/100/page/7", "bestsellers_voice_type_p7", ["featured", "genre_asmr"], "bestsellers_voice_type_p7.html"),
+    ("https://www.dlsite.com/maniax/fsr/=/work_type/MUS/order/dl_d/per_page/100/page/7", "bestsellers_mus_p7", ["featured", "genre_asmr"], "bestsellers_mus_p7.html"),
+    ("https://www.dlsite.com/girls/fsr/=/order/dl_d/per_page/100", "girls_bestsellers_dl", ["featured"], "girls_bestsellers_dl.html"),
+    ("https://www.dlsite.com/bl/fsr/=/order/dl_d/per_page/100", "bl_bestsellers_dl", ["featured"], "bl_bestsellers_dl.html"),
 ]
 
 
