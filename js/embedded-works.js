@@ -1,1 +1,1 @@
-window.__DOJIN_EMBEDDED_WORKS__ = {"updated_at":"2026-09-25T10:55:07.435287+09:00","live_fetch":true,"enrich_limit":17000,"enriched_count":15999,"works":[],"_note":"stub; catalog is data/works.json"};
+window.__DOJIN_EMBEDDED_WORKS__ = {"updated_at":"2026-09-28T11:03:08.552930+09:00","live_fetch":true,"enrich_limit":18000,"enriched_count":16866,"works":[],"_note":"stub; catalog is data/works.json"};
