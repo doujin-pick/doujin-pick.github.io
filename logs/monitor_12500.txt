@@ -1,0 +1,23 @@
+00:22:31 [enrich] 750/12500 works.json=12500
+00:24:02 [enrich] 1811/12500 works.json=12500
+00:25:32 [enrich] 2625/12500 works.json=12500
+00:27:02 [enrich] 3175/12500 works.json=?
+00:28:32 [enrich] 4000/12500 works.json=12500
+00:30:03 [enrich] 5350/12500 works.json=12500
+00:31:33 [enrich] 5820/12500 works.json=12500
+00:33:03 [enrich] 6333/12500 works.json=12500
+00:34:34 [enrich] 7200/12500 works.json=12500
+00:36:04 [enrich] 8411/12500 works.json=12500
+00:37:34 [enrich] 9025/12500 works.json=12500
+00:39:05 [enrich] 10410/12500 works.json=12500
+00:40:35 [enrich] 10743/12500 works.json=12500
+00:42:05 [enrich] 12064/12500 works.json=12500
+00:43:36 [enrich] 12135/12500 works.json=12500
+00:45:06 [enrich] 12204/12500 works.json=12500
+00:46:36 [enrich] 12276/12500 works.json=12500
+00:48:07 [enrich] 12351/12500 works.json=12500
+00:49:37 [enrich] 12420/12500 works.json=12500
+00:51:08 [enrich] 12488/12500 works.json=12500
+NEAR END with target count — watching for hang
+00:52:38 [enrich] 12500/12500 works.json=12500
+NEAR END with target count — watching for hang
